@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { getSecretariat } from "@/data/secretariats";
-import { newsBySecretariat } from "@/data/news";
+import { getSecretariat, type Secretariat } from "@/data/secretariats";
+import { newsBySecretariat, type NewsItem } from "@/data/news";
 import { NewsCard } from "@/components/site/NewsCard";
 
 export const Route = createFileRoute("/secretariats/$slug")({
