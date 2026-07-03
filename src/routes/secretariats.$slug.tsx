@@ -27,7 +27,7 @@ export const Route = createFileRoute("/secretariats/$slug")({
 });
 
 function SecretariatPage() {
-  const { sec, items } = Route.useLoaderData();
+  const { sec, items } = Route.useLoaderData() as { sec: Secretariat; items: NewsItem[] };
 
   return (
     <div>
