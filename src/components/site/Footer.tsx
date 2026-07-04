@@ -7,7 +7,11 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-md bg-brand font-black">ن</div>
+            <img
+              src="/main logo.jpg"
+              alt="حزب ناسیونالیست بزرگ ایران"
+              className="h-10 w-auto rounded"
+            />
             <div>
               <div className="text-base font-bold">حزب ناسیونالیست بزرگ ایران</div>
               <div className="text-xs opacity-70">NIGP · Nationalist Iran Greatness Party</div>

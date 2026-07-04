@@ -22,9 +22,11 @@ export function Header() {
           className="flex items-center gap-2 min-w-0"
           onClick={() => setOpen(false)}
         >
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-brand text-brand-foreground font-black">
-            ن
-          </div>
+          <img
+            src="/main logo.jpg"
+            alt="حزب ناسیونالیست بزرگ ایران"
+            className="h-9 w-auto shrink-0 rounded"
+          />
           <div className="min-w-0 leading-tight">
             <div className="truncate text-sm font-bold text-ink">حزب ناسیونالیست بزرگ ایران</div>
             <div className="truncate text-[10px] text-muted-foreground">NIGP</div>
