@@ -73,13 +73,21 @@ function NewsDetail() {
         <User className="h-4 w-4" /> نویسنده: {item.author}
       </div>
 
-      <div className="prose prose-neutral mt-8 max-w-none text-[15px] leading-9 text-foreground/90">
+      <div className="mt-2 whitespace-pre-wrap text-sm leading-7 text-muted-foreground prose prose-neutral mt-8 max-w-none text-[15px] leading-9 text-foreground/90">
         <p>{item.body}</p>
       </div>
 
       {sec && (
         <div className="mt-8 rounded-lg border border-border bg-muted/40 p-4 text-sm">
-          این خبر توسط <span className="font-bold text-brand">{sec.name}</span> منتشر شده است.
+          این خبر توسط         {sec && (
+          <Link
+            to="/secretariats/$slug"
+            params={{ slug: sec.slug }}
+            className="font-bold text-brand"
+          >
+            {sec.name}
+          </Link>
+        )} منتشر شده است.
         </div>
       )}
 

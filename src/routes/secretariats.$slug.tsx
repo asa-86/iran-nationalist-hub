@@ -42,8 +42,10 @@ function SecretariatPage() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[2fr_1fr]">
         <div>
           <section>
+            
             <h2 className="text-xl font-black text-ink">درباره دبیرخانه</h2>
             <p className="mt-3 text-sm leading-8 text-foreground/85">{sec.description}</p>
+            
           </section>
 
           <section className="mt-10">
@@ -75,6 +77,12 @@ function SecretariatPage() {
               ))}
             </ul>
           </div>
+{/*           <div><p> ‌</p></div>
+          <img
+            src={sec.logo}
+            alt={sec.name}
+            className="h-9 w-auto shrink-0 rounded"
+            /> */}
         </aside>
       </div>
     </div>

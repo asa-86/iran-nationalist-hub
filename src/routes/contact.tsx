@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, Send, MapPin } from "lucide-react";
+import { Mail, Send, MapPin, Instagram, Youtube } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -25,16 +25,19 @@ function Contact() {
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         <Card icon={<Mail className="h-5 w-5" />} title="ایمیل رسمی">
-          info@nigp.ir
+          nigp.hezb@gmail.com
         </Card>
         <Card icon={<Send className="h-5 w-5" />} title="کانال تلگرام">
-          @nigp_official
+          hezbnigp@
         </Card>
-        <Card icon={<MapPin className="h-5 w-5" />} title="دفتر مرکزی">
-          تهران، ایران
+        <Card icon={<Instagram className="h-5 w-5" />} title="اینستاگرام">
+          hezbnigp@
+        </Card>
+        <Card icon={<Youtube className="h-5 w-5" />} title="یوتیوب">
+          hezbnigp@
         </Card>
       </div>
-
+{/* 
       <form className="mt-10 grid gap-5 rounded-lg border border-border bg-card p-6 shadow-card md:grid-cols-2">
         <label className="flex flex-col gap-2 text-sm">
           <span className="font-bold text-ink">نام</span>
@@ -53,7 +56,7 @@ function Contact() {
             ارسال پیام
           </button>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 }

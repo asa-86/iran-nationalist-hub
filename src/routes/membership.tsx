@@ -43,13 +43,11 @@ function Membership() {
         <div className="text-xs font-bold uppercase tracking-widest text-brand">پیوستن به حزب</div>
         <h1 className="mt-2 text-3xl font-black text-ink md:text-4xl">درخواست عضویت</h1>
         <p className="mt-2 text-sm leading-7 text-muted-foreground">
-          پس از ثبت فرم، درخواست شما هم‌زمان برای رهبر حزب، قائم‌مقام، معاون کل،
-          مسئول عضوگیری و برنامه‌نویس سایت ارسال می‌شود. هر کدام زودتر تأیید کنند،
-          عضویت شما رسمیت می‌یابد.
+          حزب ناسیونالیست بزرگ ایران از شما دعوت می‌کند تا برای همراهی و تلاش برای ایران، در این حزب و دبیرخانه‌های آن عضو شوید. برای عضویت به آی دی Oopthw7@ در تلگرام پیام بدید.
         </p>
       </header>
 
-      <form onSubmit={onSubmit} className="mt-8 grid gap-5 rounded-lg border border-border bg-card p-6 shadow-card md:grid-cols-2">
+{/*       <form onSubmit={onSubmit} className="mt-8 grid gap-5 rounded-lg border border-border bg-card p-6 shadow-card md:grid-cols-2">
         <Field label="نام یا لقب" name="name" required />
         <Field label="سن" name="age" type="number" required />
         <Field label="مدرک تحصیلی" name="education" required />
@@ -64,7 +62,7 @@ function Membership() {
             ثبت درخواست عضویت
           </button>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 }

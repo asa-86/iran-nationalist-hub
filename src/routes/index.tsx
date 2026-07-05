@@ -127,8 +127,12 @@ function Index() {
               className="group rounded-lg border border-border bg-card p-5 shadow-card transition-shadow hover:shadow-soft"
             >
               <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-brand/10 font-black text-brand">
-                  {s.name.charAt(4) || "د"}
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-brand/10 overflow-hidden">
+                  <img
+                    src={s.logo}
+                    alt={s.name}
+                    className="h-9 w-auto shrink-0 rounded"
+                  />
                 </div>
                 <div className="min-w-0">
                   <div className="truncate font-bold text-ink group-hover:text-brand">
