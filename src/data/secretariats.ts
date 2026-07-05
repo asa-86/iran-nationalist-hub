@@ -82,7 +82,7 @@ export const secretariats: Secretariat[] = [
     tagline: "پاسداشت زبان و میراث",
     description:
       "حفظ و ترویج زبان فارسی، ادبیات کلاسیک و معاصر و میراث فرهنگی ایران‌زمین.",
-    members: [{ name: "—", role: "دبیر" }],
+    members: [{ name: "MADARA", role: "دبیر" }],
   },
   {
     slug: "militarism",
