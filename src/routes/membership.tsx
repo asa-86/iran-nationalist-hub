@@ -43,8 +43,18 @@ function Membership() {
         <div className="text-xs font-bold uppercase tracking-widest text-brand">پیوستن به حزب</div>
         <h1 className="mt-2 text-3xl font-black text-ink md:text-4xl">درخواست عضویت</h1>
         <p className="mt-2 text-sm leading-7 text-muted-foreground">
-          حزب ناسیونالیست بزرگ ایران از شما دعوت می‌کند تا برای همراهی و تلاش برای ایران، در این حزب و دبیرخانه‌های آن عضو شوید. برای عضویت به آی دی Oopthw7@ در تلگرام پیام بدید.
+          حزب ناسیونالیست بزرگ ایران از شما دعوت می‌کند تا برای همراهی و تلاش برای ایران، در این حزب و دبیرخانه‌های آن عضو شوید. برای عضویت در تالارگفتگوی حزب در تلگرام پیام بدهید.
         </p>
+        
+        <div className="mt-7 flex flex-wrap gap-3">
+          <a
+            href="https://t.me/+YCDzhLuK9I9lMGU6"
+            className="rounded-md bg-brand px-5 py-3 text-sm font-bold text-brand-foreground shadow-soft hover:bg-brand/90"
+          >
+           تالار گفتگوی حزب
+          </a>
+        </div>
+
       </header>
 
 {/*       <form onSubmit={onSubmit} className="mt-8 grid gap-5 rounded-lg border border-border bg-card p-6 shadow-card md:grid-cols-2">

@@ -51,7 +51,7 @@ function Index() {
           </div>
 
           <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <div className="text-xs opacity-70">آخرین اطلاعیه</div>
+            <div className="text-xs opacity-70">آخرین مطلب</div>
             <div className="mt-2 text-lg font-bold leading-8">{announcements[0].title}</div>
             <p className="mt-2 text-sm leading-7 opacity-80">{announcements[0].excerpt}</p>
             <Link
@@ -69,13 +69,13 @@ function Index() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="mb-6 flex items-end justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-black text-ink md:text-3xl">آخرین اخبار</h2>
+            <h2 className="text-2xl font-black text-ink md:text-3xl">آخرین مطالب</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              گزیده‌ای از تازه‌ترین اخبار دبیرخانه‌های حزب
+              گزیده‌ای از تازه‌ترین مطالب دبیرخانه‌های حزب
             </p>
           </div>
           <Link to="/news" className="shrink-0 text-sm font-bold text-brand hover:underline">
-            همه اخبار
+            همه مطالب
           </Link>
         </div>
 

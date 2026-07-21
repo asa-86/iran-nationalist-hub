@@ -19,17 +19,18 @@ export type Secretariat = {
 export const secretariats: Secretariat[] = [
   {
     slug: "news",
-    name: "دبیرخانه اخبار",
+    name: "دبیرخانه رسانه و اخبار",
     logo:newsLogo,
-    tagline: "روایت لحظه‌به‌لحظه رویدادها",
+    tagline: "صدای حزب در فضای عمومی",
     description:
-      "دبیرخانه اخبار وظیفه پوشش، تنظیم و انتشار رویدادهای مربوط به حزب و ایران را بر عهده دارد و نقطه اتصال میان بدنه حزب و افکار عمومی است.",
+      "این دبیرخانه سیاست‌های رسانه‌ای، تولید محتوا و حضور حزب در پلتفرم‌های ارتباطی را راهبری می‌کند.",
     members: [
-      { name: "حسین", role: "دبیر" },
-      { name: "Qt", role: "معاون دبیر" },
+      { name: "عَصـا ¦ 𝙰𝚂𝙰", role: "دبیر" },
+      { name: "Tondro", role: "معاون اخبار" },
+      { name: "Qt", role: "معاون رسانه" },
     ],
   },
-  {
+/*   {
     slug: "media",
     name: "دبیرخانه رسانه",
     logo: mediaLogo,
@@ -37,7 +38,7 @@ export const secretariats: Secretariat[] = [
     description:
       "این دبیرخانه سیاست‌های رسانه‌ای، تولید محتوا و حضور حزب در پلتفرم‌های ارتباطی را راهبری می‌کند.",
     members: [{ name: "satoru gojo", role: "دبیر" }],
-  },
+  }, */
   {
     slug: "history",
     name: "دبیرخانه تاریخ",
@@ -45,7 +46,11 @@ export const secretariats: Secretariat[] = [
     tagline: "بازخوانی روشمند گذشته ایران",
     description:
       "پژوهش، مستندسازی و انتشار مطالعات تاریخی با تکیه بر منابع دست‌اول و روش‌شناسی علمی.",
-    members: [{ name: "دشتي", role: "دبیر" }],
+    members: [
+      { name: "A.R", role: "دبیر" },
+      { name: "S M", role: "معاون دبیر" },
+
+    ],
   },
   {
     slug: "economy",
@@ -63,7 +68,10 @@ export const secretariats: Secretariat[] = [
     tagline: "اندیشه سیاسی و راهبرد ملی",
     description:
       "بررسی مسائل داخلی و بین‌المللی، تدوین مواضع سیاسی و طراحی راهبردهای حکمرانی از منظر ملی‌گرایی ایرانی.",
-    members: [{ name: "Mirage", role: "دبیر" }],
+    members: [
+      { name: "Mirage", role: "دبیر" },
+      { name: "دشتي", role: "معاون دبیر" },    
+    ],
   },
   {
     slug: "philosophy",
@@ -72,8 +80,8 @@ export const secretariats: Secretariat[] = [
     tagline: "پایه‌های فکری حزب",
     description:
       "بازاندیشی در مبانی فلسفی ناسیونالیسم ایرانی، منطق سیاسی و پرورش تفکر انتقادی در بدنه حزب.",
-    members: [{ name: "YOHAN", role: "دبیر" },
-      { name: "Mr. Gold Coin", role: "معاون دبیر" },],
+    members: [{ name: "Mr. Gold Coin", role: "دبیر" },
+/*       { name: "Mr. Gold Coin", role: "معاون دبیر" } */],
   },
   {
     slug: "literature",
@@ -91,8 +99,8 @@ export const secretariats: Secretariat[] = [
     tagline: "امنیت و اقتدار ملی",
     description:
       "مطالعه دکترین دفاعی، تاریخ نظامی ایران و راهبردهای امنیت ملی از منظر ناسیونالیستی.",
-    members: [{ name: "Alireza", role: "دبیر" },
-      { name: "محمدحسین اصفهانی", role: "معاون دبیر" },],
+    members: [{ name: "محمدحسین اصفهانی", role: "دبیر" },
+/*       { name: "محمدحسین اصفهانی", role: "معاون دبیر" }, */],
   },
 ];
 

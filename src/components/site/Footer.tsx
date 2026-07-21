@@ -14,7 +14,7 @@ export function Footer() {
             />
             <div>
               <div className="text-base font-bold">حزب ناسیونالیست بزرگ ایران</div>
-              <div className="text-xs opacity-70">NIGP · Nationalist Iran Greatness Party</div>
+              <div className="text-xs opacity-70">NIGP · Nationalist Iran Greater Party</div>
             </div>
           </div>
           <p className="mt-4 max-w-md text-sm leading-7 opacity-80">

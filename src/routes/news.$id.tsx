@@ -3,6 +3,7 @@ import { getNews, formatDate } from "@/data/news";
 import { getSecretariat } from "@/data/secretariats";
 import { useState } from "react";
 import { MessageSquare, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 export const Route = createFileRoute("/news/$id")({
   loader: ({ params }) => {
@@ -73,8 +74,10 @@ function NewsDetail() {
         <User className="h-4 w-4" /> نویسنده: {item.author}
       </div>
 
-      <div className="mt-2 whitespace-pre-wrap text-sm leading-7 text-muted-foreground prose prose-neutral mt-8 max-w-none text-[15px] leading-9 text-foreground/90">
-        <p>{item.body}</p>
+      <div className="mt-8 prose prose-neutral max-w-none text-[15px] leading-9 text-foreground/90 prose-p:my-6">
+        <ReactMarkdown>
+          {item.body}
+        </ReactMarkdown>
       </div>
 
       {sec && (
