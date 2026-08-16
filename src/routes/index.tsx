@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { news, announcements, formatDate } from "@/data/news";
-import { secretariats } from "@/data/secretariats";
+import { useEffect, useState } from "react";
+import { getSecretariats, type Secretariat } from "@/services/secretariats";
 import { NewsCard } from "@/components/site/NewsCard";
 import { ArrowLeft } from "lucide-react";
 
@@ -9,6 +10,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [secretariats, setSecretariats] = useState<Secretariat[]>([]);
+
+  useEffect(() => {
+    getSecretariats()
+      .then(setSecretariats)
+      .catch((error) => {
+        console.error("Failed to load secretariats:", error);
+      });
+  }, []);
   const latestNews = news.slice(0, 4);
 
   return (
@@ -129,7 +139,7 @@ function Index() {
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-brand/10 overflow-hidden">
                   <img
-                    src={s.logo}
+                    src={s.logo_url ?? ""}
                     alt={s.name}
                     className="h-9 w-auto shrink-0 rounded"
                   />
