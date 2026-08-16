@@ -136,11 +136,3 @@ export async function getNewsBySecretariat(
 
   return (data ?? []).map((row) => mapNews(row as NewsQueryRow));
 }
-
-export function formatDate(value: string) {
-  return new Intl.DateTimeFormat("fa-IR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(value));
-}
