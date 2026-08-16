@@ -14,3 +14,4 @@ export async function testSupabaseConnection() {
 
   return { data, error };
 }
+testSupabaseConnection();
