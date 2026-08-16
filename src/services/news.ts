@@ -37,6 +37,8 @@ function mapNews(row: NewsQueryRow): NewsItem {
     title: row.title,
     excerpt: row.excerpt ?? "",
     body: row.content,
+    // فعلاً author در schema فعلی NewsItem وجود دارد
+    // ولی در جدول news هنوز به آن متصل نشده‌ایم.
     author: "",
     secretariatSlug: getSecretariatSlug(row.secretariats),
     publishedAt: row.published_at ?? "",
