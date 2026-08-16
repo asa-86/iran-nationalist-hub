@@ -1,13 +1,25 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { getSecretariat, type Secretariat } from "@/data/secretariats";
+import {
+  getSecretariatBySlug,
+  type Secretariat,
+} from "@/services/secretariats";
+import { getSecretariat } from "@/data/secretariats";
 import { newsBySecretariat, type NewsItem } from "@/data/news";
 import { NewsCard } from "@/components/site/NewsCard";
 
 export const Route = createFileRoute("/secretariats/$slug")({
-  loader: ({ params }) => {
-    const sec = getSecretariat(params.slug);
+  loader: async ({ params }) => {
+    const sec = await getSecretariatBySlug(params.slug);
+
     if (!sec) throw notFound();
-    return { sec, items: newsBySecretariat(params.slug) };
+
+    const staticSec = getSecretariat(params.slug);
+
+    return {
+      sec,
+      staticSec,
+      items: newsBySecretariat(params.slug),
+    };
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -27,7 +39,11 @@ export const Route = createFileRoute("/secretariats/$slug")({
 });
 
 function SecretariatPage() {
-  const { sec, items } = Route.useLoaderData() as { sec: Secretariat; items: NewsItem[] };
+  const { sec, staticSec, items } = Route.useLoaderData() as {
+    sec: Secretariat;
+    staticSec: ReturnType<typeof getSecretariat>;
+    items: NewsItem[];
+  };
 
   return (
     <div>
@@ -67,8 +83,11 @@ function SecretariatPage() {
           <div className="rounded-lg border border-border bg-card p-5 shadow-card">
             <h3 className="text-sm font-black text-ink">اعضای دبیرخانه</h3>
             <ul className="mt-4 space-y-3">
-              {sec.members.map((m, i) => (
-                <li key={i} className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
+              {staticSec?.members?.map((m, i) => (
+                <li
+                  key={i}
+                  className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0"
+                >
                   <span className="text-sm font-bold text-ink">{m.name}</span>
                   <span className="rounded-md bg-brand/10 px-2 py-1 text-xs font-bold text-brand">
                     {m.role}

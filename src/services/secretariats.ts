@@ -27,3 +27,23 @@ export async function getSecretariats(): Promise<Secretariat[]> {
 
   return data ?? [];
 }
+
+export async function getSecretariatBySlug(
+  slug: string
+): Promise<Secretariat | null> {
+  const { data, error } = await supabase
+    .from("secretariats")
+    .select(
+      "id, name, slug, tagline, description, logo_url, display_order, is_active"
+    )
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch secretariat:", error);
+    throw error;
+  }
+
+  return data;
+}
