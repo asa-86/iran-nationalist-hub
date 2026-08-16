@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+export type { NewsItem } from "@/data/news";
 import type { NewsItem } from "@/data/news";
 
 type NewsQueryRow = {
