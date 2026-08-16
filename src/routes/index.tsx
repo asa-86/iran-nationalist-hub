@@ -139,7 +139,7 @@ function Index() {
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-brand/10 overflow-hidden">
                   <img
-                    src={s.logo_url ?? ""}
+                    src={s.logo}
                     alt={s.name}
                     className="h-9 w-auto shrink-0 rounded"
                   />
