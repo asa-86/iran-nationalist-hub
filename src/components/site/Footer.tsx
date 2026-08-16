@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { secretariats } from "@/data/secretariats";
+import { SecretariatLinks } from "@/components/site/SecretariatLinks";
 
 export function Footer() {
   return (
@@ -36,19 +36,7 @@ export function Footer() {
 
         <div>
           <div className="mb-3 text-sm font-bold">دبیرخانه‌ها</div>
-          <ul className="space-y-2 text-sm opacity-80">
-            {secretariats.slice(0, 6).map((s) => (
-              <li key={s.slug}>
-                <Link
-                  to="/secretariats/$slug"
-                  params={{ slug: s.slug }}
-                  className="hover:text-brand"
-                >
-                  {s.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <SecretariatLinks />
         </div>
       </div>
       <div className="border-t border-white/10">
