@@ -155,6 +155,10 @@ export function newsBySecretariat(slug: string) {
 }
 
 export function formatDate(iso: string) {
+  if (!iso) {
+    return "";
+  }
+
   try {
     return new Intl.DateTimeFormat("fa-IR", {
       dateStyle: "long",

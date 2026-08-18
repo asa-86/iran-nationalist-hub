@@ -17,7 +17,7 @@ export const Route = createFileRoute("/secretariats/$slug")({
       throw notFound();
     }
 
-    const items = await getNewsBySecretariat(sec.id);
+    const items = await getNewsBySecretariat(sec.slug);
 
     return {
       sec,

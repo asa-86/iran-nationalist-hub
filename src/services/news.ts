@@ -1,6 +1,15 @@
 import { supabase } from "@/lib/supabase";
-export type { NewsItem } from "@/data/news";
-import type { NewsItem } from "@/data/news";
+
+export type NewsItem = {
+  id: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  author: string;
+  secretariatSlug: string;
+  secretariatName: string;
+  publishedAt: string;
+};
 
 type NewsQueryRow = {
   id: string;
@@ -11,37 +20,64 @@ type NewsQueryRow = {
   secretariats:
     | {
         slug: string;
+        name: string;
       }
     | {
         slug: string;
+        name: string;
       }[]
     | null;
 };
 
-function getSecretariatSlug(
+/**
+ * اطلاعات دبیرخانه‌ای که همراه خبر از Supabase برمی‌گردد
+ * را به یک ساختار ثابت تبدیل می‌کند.
+ */
+function getSecretariat(
   secretariats: NewsQueryRow["secretariats"],
-): string {
+): {
+  slug: string;
+  name: string;
+} {
   if (!secretariats) {
-    return "";
+    return {
+      slug: "",
+      name: "حزب",
+    };
   }
 
   if (Array.isArray(secretariats)) {
-    return secretariats[0]?.slug ?? "";
+    return {
+      slug: secretariats[0]?.slug ?? "",
+      name: secretariats[0]?.name ?? "حزب",
+    };
   }
 
-  return secretariats.slug;
+  return {
+    slug: secretariats.slug,
+    name: secretariats.name,
+  };
 }
 
+/**
+ * ساختار خام Supabase را به ساختار مورد استفاده UI تبدیل می‌کند.
+ */
 function mapNews(row: NewsQueryRow): NewsItem {
+  const secretariat = getSecretariat(row.secretariats);
+
   return {
     id: row.id,
     title: row.title,
     excerpt: row.excerpt ?? "",
     body: row.content,
-    // فعلاً author در schema فعلی NewsItem وجود دارد
-    // ولی در جدول news هنوز به آن متصل نشده‌ایم.
+
+    // فعلاً نام نویسنده را از profiles دریافت نمی‌کنیم.
+    // در مرحله بعدی می‌توان relation مربوط به author را اضافه کرد.
     author: "",
-    secretariatSlug: getSecretariatSlug(row.secretariats),
+
+    secretariatSlug: secretariat.slug,
+    secretariatName: secretariat.name,
+
     publishedAt: row.published_at ?? "",
   };
 }
@@ -52,16 +88,17 @@ function mapNews(row: NewsQueryRow): NewsItem {
 export async function getNews(): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from("news")
-    .select(`
+    .select(
       id,
       title,
       excerpt,
       content,
       published_at,
       secretariats (
-        slug
+        slug,
+        name
       )
-    `)
+    )
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
@@ -81,16 +118,17 @@ export async function getNewsById(
 ): Promise<NewsItem | null> {
   const { data, error } = await supabase
     .from("news")
-    .select(`
+    .select(
       id,
       title,
       excerpt,
       content,
       published_at,
       secretariats (
-        slug
+        slug,
+        name
       )
-    `)
+    )
     .eq("id", id)
     .eq("status", "published")
     .maybeSingle();
@@ -108,23 +146,24 @@ export async function getNewsById(
 }
 
 /**
- * دریافت اخبار یک دبیرخانه
+ * دریافت اخبار یک دبیرخانه بر اساس slug
  */
 export async function getNewsBySecretariat(
   slug: string,
 ): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from("news")
-    .select(`
+    .select(
       id,
       title,
       excerpt,
       content,
       published_at,
       secretariats!inner (
-        slug
+        slug,
+        name
       )
-    `)
+    )
     .eq("status", "published")
     .eq("secretariats.slug", slug)
     .order("published_at", { ascending: false });
@@ -135,4 +174,21 @@ export async function getNewsBySecretariat(
   }
 
   return (data ?? []).map((row) => mapNews(row as NewsQueryRow));
+}
+
+/**
+ * تبدیل تاریخ ISO به تاریخ فارسی
+ */
+export function formatDate(iso: string) {
+  if (!iso) {
+    return "";
+  }
+
+  try {
+    return new Intl.DateTimeFormat("fa-IR", {
+      dateStyle: "long",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
 }

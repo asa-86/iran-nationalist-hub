@@ -2,9 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { NewsCard } from "@/components/site/NewsCard";
-import type { NewsItem } from "@/data/news";
+import {
+  getNews,
+  type NewsItem,
+} from "@/services/news";
 
-import { getNews } from "@/services/news";
 import {
   getSecretariats,
   type Secretariat,

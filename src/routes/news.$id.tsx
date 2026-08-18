@@ -4,7 +4,7 @@ import { MessageSquare, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 import { getNewsById } from "@/services/news";
-import { getSecretariat } from "@/data/secretariats";
+
 
 export const Route = createFileRoute("/news/$id")({
   loader: async ({ params }) => {
@@ -77,7 +77,7 @@ function NewsDetail() {
    * فعلاً اطلاعات تکمیلی دبیرخانه از data قدیمی گرفته می‌شود.
    * در مرحله بعد این قسمت را هم به Supabase منتقل می‌کنیم.
    */
-  const sec = getSecretariat(item.secretariatSlug);
+
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState("");
@@ -119,13 +119,13 @@ function NewsDetail() {
 
       {/* اطلاعات بالای خبر */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        {sec && (
+        {item.secretariatSlug && (
           <Link
             to="/secretariats/$slug"
-            params={{ slug: sec.slug }}
+            params={{ slug: item.secretariatSlug }}
             className="rounded-md bg-brand/10 px-2.5 py-1 font-bold text-brand hover:bg-brand/15"
           >
-            {sec.name}
+            {item.secretariatName}
           </Link>
         )}
 
@@ -155,15 +155,15 @@ function NewsDetail() {
       </div>
 
       {/* دبیرخانه منتشرکننده */}
-      {sec && (
+      {item.secretariatSlug && (
         <div className="mt-8 rounded-lg border border-border bg-muted/40 p-4 text-sm">
           این خبر توسط{" "}
           <Link
             to="/secretariats/$slug"
-            params={{ slug: sec.slug }}
+            params={{ slug: item.secretariatSlug }}
             className="font-bold text-brand"
           >
-            {sec.name}
+            {item.secretariatName}
           </Link>{" "}
           منتشر شده است.
         </div>
