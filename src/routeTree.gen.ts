@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as SecretariatsSlugRouteImport } from './routes/secretariats.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
+import { Route as DashboardNewsNewRouteImport } from './routes/dashboard.news.new'
 
 const MembershipRoute = MembershipRouteImport.update({
   id: '/membership',
@@ -70,30 +71,37 @@ const NewsIdRoute = NewsIdRouteImport.update({
   path: '/news/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
+  id: '/news/new',
+  path: '/news/new',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
+  '/dashboard/news/new': typeof DashboardNewsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news': typeof NewsIndexRoute
+  '/dashboard/news/new': typeof DashboardNewsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,12 +109,13 @@ export interface FileRoutesById {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
+  '/dashboard/news/new': typeof DashboardNewsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
+    | '/dashboard/news/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news'
+    | '/dashboard/news/new'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
+    | '/dashboard/news/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,7 +164,7 @@ export interface RootRouteChildren {
   BeliefsRoute: typeof BeliefsRoute
   CharterRoute: typeof CharterRoute
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
   NewsIdRoute: typeof NewsIdRoute
@@ -232,15 +244,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/news/new': {
+      id: '/dashboard/news/new'
+      path: '/news/new'
+      fullPath: '/dashboard/news/new'
+      preLoaderRoute: typeof DashboardNewsNewRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
+
+interface DashboardRouteChildren {
+  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardNewsNewRoute: DashboardNewsNewRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BeliefsRoute: BeliefsRoute,
   CharterRoute: CharterRoute,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRoute,
+  DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
   NewsIdRoute: NewsIdRoute,

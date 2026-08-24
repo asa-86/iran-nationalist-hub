@@ -290,10 +290,13 @@ function DashboardPage() {
 
         <div className="mt-5 flex flex-wrap gap-3">
           {canCreateNews ? (
-            <div className="rounded-md bg-brand/10 px-4 py-3 text-sm font-bold text-brand">
-              شما مجوز افزودن خبر دارید.
-            </div>
-          ) : (
+              <Link
+                to="/dashboard/news/new"
+                className="inline-flex items-center rounded-md bg-brand px-4 py-3 text-sm font-bold text-brand-foreground hover:bg-brand/90"
+              >
+                افزودن خبر جدید
+              </Link>
+            ) : (
             <div className="rounded-md bg-muted px-4 py-3 text-sm text-muted-foreground">
               مجوز افزودن خبر برای این حساب فعال نیست.
             </div>

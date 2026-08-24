@@ -148,3 +148,89 @@ export function formatDate(iso: string) {
     return iso;
   }
 }
+
+export type CreateNewsInput = {
+  title: string;
+  excerpt: string;
+  content: string;
+  secretariatId: string | null;
+  categoryId?: string | null;
+  status?: "draft" | "pending_review" | "published";
+};
+
+export type CreatedNews = {
+  id: string;
+  slug: string;
+  status: string;
+};
+
+function createSlug(title: string) {
+  const base = title
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const randomPart = crypto.randomUUID().slice(0, 8);
+
+  return `${base || "news"}-${randomPart}`;
+}
+
+export async function createNews(
+  input: CreateNewsInput,
+): Promise<CreatedNews> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("برای افزودن خبر باید وارد حساب شوید.");
+  }
+
+  const title = input.title.trim();
+  const excerpt = input.excerpt.trim();
+  const content = input.content.trim();
+
+  if (!title) {
+    throw new Error("عنوان خبر الزامی است.");
+  }
+
+  if (!content) {
+    throw new Error("متن خبر الزامی است.");
+  }
+
+  const status = input.status ?? "draft";
+
+  const { data, error } = await supabase
+    .from("news")
+    .insert({
+      title,
+      slug: createSlug(title),
+      excerpt: excerpt || null,
+      content,
+      author_id: user.id,
+      secretariat_id: input.secretariatId,
+      category_id: input.categoryId ?? null,
+      status,
+      published_at:
+        status === "published"
+          ? new Date().toISOString()
+          : null,
+    })
+    .select("id, slug, status")
+    .single();
+
+  if (error) {
+    console.error("Failed to create news:", error);
+    throw error;
+  }
+
+  return data as CreatedNews;
+}
