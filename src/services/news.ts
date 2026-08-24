@@ -480,3 +480,210 @@ export async function submitNewsForReview(
     throw error;
   }
 }
+
+export async function canManageNewsReview(): Promise<boolean> {
+  const { data, error } = await supabase.rpc(
+    "can_manage_news_review",
+  );
+
+  if (error) {
+    console.error(
+      "Failed to check review permission:",
+      error,
+    );
+    throw error;
+  }
+
+  return data === true;
+}
+
+export async function getPendingNews(): Promise<
+  ManagedNewsItem[]
+> {
+  const allowed = await canManageNewsReview();
+
+  if (!allowed) {
+    throw new Error(
+      "شما اجازه بررسی اخبار را ندارید.",
+    );
+  }
+
+  const { data, error } = await supabase
+    .from("news")
+    .select(
+      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+    )
+    .eq("status", "pending_review")
+    .order("updated_at", {
+      ascending: true,
+    });
+
+  if (error) {
+    console.error(
+      "Failed to fetch pending news:",
+      error,
+    );
+    throw error;
+  }
+
+  return (data ?? []).map((row) =>
+    mapManagedNews(row as ManagedNewsRow),
+  );
+}
+
+export async function getReviewNewsById(
+  id: string,
+): Promise<ManagedNewsItem | null> {
+  const allowed = await canManageNewsReview();
+
+  if (!allowed) {
+    throw new Error(
+      "شما اجازه بررسی اخبار را ندارید.",
+    );
+  }
+
+  const { data, error } = await supabase
+    .from("news")
+    .select(
+      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+    )
+    .eq("id", id)
+    .eq("status", "pending_review")
+    .maybeSingle();
+
+  if (error) {
+    console.error(
+      "Failed to fetch review news:",
+      error,
+    );
+    throw error;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return mapManagedNews(
+    data as ManagedNewsRow,
+  );
+}
+
+export type ReviewNewsUpdateInput = {
+  title: string;
+  excerpt: string;
+  content: string;
+  secretariatId: string | null;
+};
+
+export async function updateReviewNews(
+  id: string,
+  input: ReviewNewsUpdateInput,
+) {
+  const allowed = await canManageNewsReview();
+
+  if (!allowed) {
+    throw new Error(
+      "شما اجازه ویرایش این خبر را ندارید.",
+    );
+  }
+
+  const title = input.title.trim();
+  const excerpt = input.excerpt.trim();
+  const content = input.content.trim();
+
+  if (!title) {
+    throw new Error("عنوان خبر الزامی است.");
+  }
+
+  if (!content) {
+    throw new Error("متن خبر الزامی است.");
+  }
+
+  const { error } = await supabase
+    .from("news")
+    .update({
+      title,
+      excerpt: excerpt || null,
+      content,
+      secretariat_id: input.secretariatId,
+    })
+    .eq("id", id)
+    .eq("status", "pending_review");
+
+  if (error) {
+    console.error(
+      "Failed to update review news:",
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function publishNews(
+  id: string,
+) {
+  const allowed = await canManageNewsReview();
+
+  if (!allowed) {
+    throw new Error(
+      "شما اجازه انتشار خبر را ندارید.",
+    );
+  }
+
+  const { error } = await supabase
+    .from("news")
+    .update({
+      status: "published",
+      published_at: new Date().toISOString(),
+      rejection_reason: null,
+    })
+    .eq("id", id)
+    .eq("status", "pending_review");
+
+  if (error) {
+    console.error(
+      "Failed to publish news:",
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function rejectNews(
+  id: string,
+  reason: string,
+) {
+  const allowed = await canManageNewsReview();
+
+  if (!allowed) {
+    throw new Error(
+      "شما اجازه رد خبر را ندارید.",
+    );
+  }
+
+  const rejectionReason = reason.trim();
+
+  if (!rejectionReason) {
+    throw new Error(
+      "دلیل رد خبر را وارد کنید.",
+    );
+  }
+
+  const { error } = await supabase
+    .from("news")
+    .update({
+      status: "rejected",
+      rejection_reason: rejectionReason,
+      published_at: null,
+    })
+    .eq("id", id)
+    .eq("status", "pending_review");
+
+  if (error) {
+    console.error(
+      "Failed to reject news:",
+      error,
+    );
+    throw error;
+  }
+}

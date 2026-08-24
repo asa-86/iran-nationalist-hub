@@ -17,6 +17,11 @@ import {
   type CurrentUser,
 } from "@/services/auth";
 
+import { canManageNewsReview } from "@/services/news";
+
+const [canReviewNews, setCanReviewNews] =
+  useState(false);
+
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
@@ -47,11 +52,19 @@ function DashboardPage() {
           await navigate({
             to: "/login",
           });
+      
+          return;
+        }
 
+        const reviewAccess =
+          await canManageNewsReview();
+
+        if (!active) {
           return;
         }
 
         setCurrentUser(user);
+        setCanReviewNews(reviewAccess);
       } catch (error) {
         console.error(
           "Failed to load dashboard:",
@@ -309,6 +322,14 @@ function DashboardPage() {
             <div className="rounded-md bg-muted px-4 py-3 text-sm text-muted-foreground">
               مجوز افزودن خبر برای این حساب فعال نیست.
             </div>
+          )}
+          {canReviewNews && (
+            <Link
+              to="/dashboard/news/review"
+              className="inline-flex items-center rounded-md border border-border px-4 py-3 text-sm font-bold hover:bg-accent"
+            >
+              بررسی اخبار
+            </Link>
           )}
           
 

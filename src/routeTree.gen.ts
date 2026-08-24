@@ -20,7 +20,9 @@ import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as SecretariatsSlugRouteImport } from './routes/secretariats.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as DashboardNewsRouteImport } from './routes/dashboard_.news'
+import { Route as DashboardNewsReviewRouteImport } from './routes/dashboard_.news.review'
 import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news.new'
+import { Route as DashboardNewsIdReviewRouteImport } from './routes/dashboard_.news.$id.review'
 import { Route as DashboardNewsIdEditRouteImport } from './routes/dashboard_.news.$id.edit'
 
 const MembershipRoute = MembershipRouteImport.update({
@@ -78,9 +80,19 @@ const DashboardNewsRoute = DashboardNewsRouteImport.update({
   path: '/dashboard/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardNewsReviewRoute = DashboardNewsReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => DashboardNewsRoute,
+} as any)
 const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => DashboardNewsRoute,
+} as any)
+const DashboardNewsIdReviewRoute = DashboardNewsIdReviewRouteImport.update({
+  id: '/$id/review',
+  path: '/$id/review',
   getParentRoute: () => DashboardNewsRoute,
 } as any)
 const DashboardNewsIdEditRoute = DashboardNewsIdEditRouteImport.update({
@@ -102,7 +114,9 @@ export interface FileRoutesByFullPath {
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
   '/dashboard/news/new': typeof DashboardNewsNewRoute
+  '/dashboard/news/review': typeof DashboardNewsReviewRoute
   '/dashboard/news/$id/edit': typeof DashboardNewsIdEditRoute
+  '/dashboard/news/$id/review': typeof DashboardNewsIdReviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,7 +131,9 @@ export interface FileRoutesByTo {
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news': typeof NewsIndexRoute
   '/dashboard/news/new': typeof DashboardNewsNewRoute
+  '/dashboard/news/review': typeof DashboardNewsReviewRoute
   '/dashboard/news/$id/edit': typeof DashboardNewsIdEditRoute
+  '/dashboard/news/$id/review': typeof DashboardNewsIdReviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,7 +149,9 @@ export interface FileRoutesById {
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
   '/dashboard_/news/new': typeof DashboardNewsNewRoute
+  '/dashboard_/news/review': typeof DashboardNewsReviewRoute
   '/dashboard_/news/$id/edit': typeof DashboardNewsIdEditRoute
+  '/dashboard_/news/$id/review': typeof DashboardNewsIdReviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,7 +168,9 @@ export interface FileRouteTypes {
     | '/secretariats/$slug'
     | '/news/'
     | '/dashboard/news/new'
+    | '/dashboard/news/review'
     | '/dashboard/news/$id/edit'
+    | '/dashboard/news/$id/review'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -165,7 +185,9 @@ export interface FileRouteTypes {
     | '/secretariats/$slug'
     | '/news'
     | '/dashboard/news/new'
+    | '/dashboard/news/review'
     | '/dashboard/news/$id/edit'
+    | '/dashboard/news/$id/review'
   id:
     | '__root__'
     | '/'
@@ -180,7 +202,9 @@ export interface FileRouteTypes {
     | '/secretariats/$slug'
     | '/news/'
     | '/dashboard_/news/new'
+    | '/dashboard_/news/review'
     | '/dashboard_/news/$id/edit'
+    | '/dashboard_/news/$id/review'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -276,11 +300,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard_/news/review': {
+      id: '/dashboard_/news/review'
+      path: '/review'
+      fullPath: '/dashboard/news/review'
+      preLoaderRoute: typeof DashboardNewsReviewRouteImport
+      parentRoute: typeof DashboardNewsRoute
+    }
     '/dashboard_/news/new': {
       id: '/dashboard_/news/new'
       path: '/new'
       fullPath: '/dashboard/news/new'
       preLoaderRoute: typeof DashboardNewsNewRouteImport
+      parentRoute: typeof DashboardNewsRoute
+    }
+    '/dashboard_/news/$id/review': {
+      id: '/dashboard_/news/$id/review'
+      path: '/$id/review'
+      fullPath: '/dashboard/news/$id/review'
+      preLoaderRoute: typeof DashboardNewsIdReviewRouteImport
       parentRoute: typeof DashboardNewsRoute
     }
     '/dashboard_/news/$id/edit': {
@@ -295,12 +333,16 @@ declare module '@tanstack/react-router' {
 
 interface DashboardNewsRouteChildren {
   DashboardNewsNewRoute: typeof DashboardNewsNewRoute
+  DashboardNewsReviewRoute: typeof DashboardNewsReviewRoute
   DashboardNewsIdEditRoute: typeof DashboardNewsIdEditRoute
+  DashboardNewsIdReviewRoute: typeof DashboardNewsIdReviewRoute
 }
 
 const DashboardNewsRouteChildren: DashboardNewsRouteChildren = {
   DashboardNewsNewRoute: DashboardNewsNewRoute,
+  DashboardNewsReviewRoute: DashboardNewsReviewRoute,
   DashboardNewsIdEditRoute: DashboardNewsIdEditRoute,
+  DashboardNewsIdReviewRoute: DashboardNewsIdReviewRoute,
 }
 
 const DashboardNewsRouteWithChildren = DashboardNewsRoute._addFileChildren(
