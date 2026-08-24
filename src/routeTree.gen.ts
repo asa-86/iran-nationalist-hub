@@ -19,7 +19,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as SecretariatsSlugRouteImport } from './routes/secretariats.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
-import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news.neww'
+import { Route as DashboardNewsRouteImport } from './routes/dashboard_.news'
+import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news.new'
+import { Route as DashboardNewsIdEditRouteImport } from './routes/dashboard_.news.$id.edit'
 
 const MembershipRoute = MembershipRouteImport.update({
   id: '/membership',
@@ -71,10 +73,20 @@ const NewsIdRoute = NewsIdRouteImport.update({
   path: '/news/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
-  id: '/dashboard_/news/new',
-  path: '/dashboard/news/new',
+const DashboardNewsRoute = DashboardNewsRouteImport.update({
+  id: '/dashboard_/news',
+  path: '/dashboard/news',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => DashboardNewsRoute,
+} as any)
+const DashboardNewsIdEditRoute = DashboardNewsIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => DashboardNewsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -85,10 +97,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
+  '/dashboard/news': typeof DashboardNewsRouteWithChildren
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
   '/dashboard/news/new': typeof DashboardNewsNewRoute
+  '/dashboard/news/$id/edit': typeof DashboardNewsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,10 +112,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
+  '/dashboard/news': typeof DashboardNewsRouteWithChildren
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news': typeof NewsIndexRoute
   '/dashboard/news/new': typeof DashboardNewsNewRoute
+  '/dashboard/news/$id/edit': typeof DashboardNewsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,10 +128,12 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
+  '/dashboard_/news': typeof DashboardNewsRouteWithChildren
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
   '/dashboard_/news/new': typeof DashboardNewsNewRoute
+  '/dashboard_/news/$id/edit': typeof DashboardNewsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,10 +145,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/membership'
+    | '/dashboard/news'
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
     | '/dashboard/news/new'
+    | '/dashboard/news/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +160,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/membership'
+    | '/dashboard/news'
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news'
     | '/dashboard/news/new'
+    | '/dashboard/news/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -153,10 +175,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/membership'
+    | '/dashboard_/news'
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
     | '/dashboard_/news/new'
+    | '/dashboard_/news/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,10 +191,10 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
+  DashboardNewsRoute: typeof DashboardNewsRouteWithChildren
   NewsIdRoute: typeof NewsIdRoute
   SecretariatsSlugRoute: typeof SecretariatsSlugRoute
   NewsIndexRoute: typeof NewsIndexRoute
-  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,15 +269,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard_/news': {
+      id: '/dashboard_/news'
+      path: '/dashboard/news'
+      fullPath: '/dashboard/news'
+      preLoaderRoute: typeof DashboardNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard_/news/new': {
       id: '/dashboard_/news/new'
-      path: '/dashboard/news/new'
+      path: '/new'
       fullPath: '/dashboard/news/new'
       preLoaderRoute: typeof DashboardNewsNewRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardNewsRoute
+    }
+    '/dashboard_/news/$id/edit': {
+      id: '/dashboard_/news/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/dashboard/news/$id/edit'
+      preLoaderRoute: typeof DashboardNewsIdEditRouteImport
+      parentRoute: typeof DashboardNewsRoute
     }
   }
 }
+
+interface DashboardNewsRouteChildren {
+  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
+  DashboardNewsIdEditRoute: typeof DashboardNewsIdEditRoute
+}
+
+const DashboardNewsRouteChildren: DashboardNewsRouteChildren = {
+  DashboardNewsNewRoute: DashboardNewsNewRoute,
+  DashboardNewsIdEditRoute: DashboardNewsIdEditRoute,
+}
+
+const DashboardNewsRouteWithChildren = DashboardNewsRoute._addFileChildren(
+  DashboardNewsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -263,10 +315,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
+  DashboardNewsRoute: DashboardNewsRouteWithChildren,
   NewsIdRoute: NewsIdRoute,
   SecretariatsSlugRoute: SecretariatsSlugRoute,
   NewsIndexRoute: NewsIndexRoute,
-  DashboardNewsNewRoute: DashboardNewsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
