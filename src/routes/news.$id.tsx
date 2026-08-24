@@ -3,7 +3,10 @@ import { useState } from "react";
 import { MessageSquare, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
-import { getNewsById } from "@/services/news";
+import {
+  formatDate,
+  getNewsById,
+} from "@/services/news";
 
 
 export const Route = createFileRoute("/news/$id")({
@@ -56,27 +59,8 @@ type Comment = {
   replies: Comment[];
 };
 
-function formatDate(iso: string) {
-  if (!iso) {
-    return "";
-  }
-
-  try {
-    return new Intl.DateTimeFormat("fa-IR", {
-      dateStyle: "long",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
-}
-
 function NewsDetail() {
   const { item } = Route.useLoaderData();
-
-  /*
-   * فعلاً اطلاعات تکمیلی دبیرخانه از data قدیمی گرفته می‌شود.
-   * در مرحله بعد این قسمت را هم به Supabase منتقل می‌کنیم.
-   */
 
 
   const [comments, setComments] = useState<Comment[]>([]);
