@@ -24,7 +24,7 @@ import {
 } from "@/services/auth";
 
 export const Route = createFileRoute(
-  "/dashboard/news/new",
+  "/dashboard_/news/new",
 )({
   component: NewNewsPage,
 });

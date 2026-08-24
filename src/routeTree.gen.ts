@@ -19,7 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as SecretariatsSlugRouteImport } from './routes/secretariats.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
-import { Route as DashboardNewsNewRouteImport } from './routes/dashboard.news.new'
+import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news.neww'
 
 const MembershipRoute = MembershipRouteImport.update({
   id: '/membership',
@@ -72,9 +72,9 @@ const NewsIdRoute = NewsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
-  id: '/news/new',
-  path: '/news/new',
-  getParentRoute: () => DashboardRoute,
+  id: '/dashboard_/news/new',
+  path: '/dashboard/news/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -82,7 +82,7 @@ export interface FileRoutesByFullPath {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
@@ -95,7 +95,7 @@ export interface FileRoutesByTo {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
@@ -109,13 +109,13 @@ export interface FileRoutesById {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
-  '/dashboard/news/new': typeof DashboardNewsNewRoute
+  '/dashboard_/news/new': typeof DashboardNewsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,7 +156,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
-    | '/dashboard/news/new'
+    | '/dashboard_/news/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,12 +164,13 @@ export interface RootRouteChildren {
   BeliefsRoute: typeof BeliefsRoute
   CharterRoute: typeof CharterRoute
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
   NewsIdRoute: typeof NewsIdRoute
   SecretariatsSlugRoute: typeof SecretariatsSlugRoute
   NewsIndexRoute: typeof NewsIndexRoute
+  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -244,39 +245,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/news/new': {
-      id: '/dashboard/news/new'
-      path: '/news/new'
+    '/dashboard_/news/new': {
+      id: '/dashboard_/news/new'
+      path: '/dashboard/news/new'
       fullPath: '/dashboard/news/new'
       preLoaderRoute: typeof DashboardNewsNewRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface DashboardRouteChildren {
-  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
-}
-
-const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardNewsNewRoute: DashboardNewsNewRoute,
-}
-
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BeliefsRoute: BeliefsRoute,
   CharterRoute: CharterRoute,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRouteWithChildren,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
   NewsIdRoute: NewsIdRoute,
   SecretariatsSlugRoute: SecretariatsSlugRoute,
   NewsIndexRoute: NewsIndexRoute,
+  DashboardNewsNewRoute: DashboardNewsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
