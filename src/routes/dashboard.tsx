@@ -17,10 +17,9 @@ import {
   type CurrentUser,
 } from "@/services/auth";
 
-import { canManageNewsReview } from "@/services/news";
-
-const [canReviewNews, setCanReviewNews] =
-  useState(false);
+import {
+  canManageNewsReview,
+} from "@/services/news";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
@@ -32,7 +31,11 @@ function DashboardPage() {
   const [currentUser, setCurrentUser] =
     useState<CurrentUser | null>(null);
 
-  const [loading, setLoading] = useState(true);
+  const [canReviewNews, setCanReviewNews] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(true);
 
   const [errorMessage, setErrorMessage] =
     useState<string | null>(null);
@@ -52,7 +55,7 @@ function DashboardPage() {
           await navigate({
             to: "/login",
           });
-      
+
           return;
         }
 
@@ -310,7 +313,7 @@ function DashboardPage() {
               >
                 افزودن خبر جدید
               </Link>
-                  
+
               <Link
                 to="/dashboard/news"
                 className="inline-flex items-center rounded-md border border-border px-4 py-3 text-sm font-bold hover:bg-accent"
@@ -323,6 +326,7 @@ function DashboardPage() {
               مجوز افزودن خبر برای این حساب فعال نیست.
             </div>
           )}
+
           {canReviewNews && (
             <Link
               to="/dashboard/news/review"
@@ -331,7 +335,6 @@ function DashboardPage() {
               بررسی اخبار
             </Link>
           )}
-          
 
           <Link
             to="/"
