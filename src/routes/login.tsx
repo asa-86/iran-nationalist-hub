@@ -30,7 +30,7 @@ function LoginPage() {
       await signIn(email.trim(), password);
 
       await navigate({
-        to: "/",
+        to: "/dashboard",
       });
     } catch (error) {
       console.error("Login failed:", error);

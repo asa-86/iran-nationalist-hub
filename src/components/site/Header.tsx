@@ -6,6 +6,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 import { getAuthUser } from "@/services/auth";
 
@@ -26,19 +27,28 @@ export function Header() {
 
   useEffect(() => {
     let active = true;
-
+    
     async function checkAuth() {
       const user = await getAuthUser();
-
+    
       if (active) {
         setLoggedIn(Boolean(user));
       }
     }
-
+  
     void checkAuth();
-
+  
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) {
+        setLoggedIn(Boolean(session?.user));
+      }
+    });
+  
     return () => {
       active = false;
+      subscription.unsubscribe();
     };
   }, []);
 
