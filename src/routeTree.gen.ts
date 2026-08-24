@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CharterRouteImport } from './routes/charter'
 import { Route as BeliefsRouteImport } from './routes/beliefs'
@@ -27,6 +28,11 @@ const MembershipRoute = MembershipRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/beliefs': typeof BeliefsRoute
   '/charter': typeof CharterRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
   '/news/$id': typeof NewsIdRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/beliefs'
     | '/charter'
     | '/contact'
+    | '/dashboard'
     | '/login'
     | '/membership'
     | '/news/$id'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/beliefs'
     | '/charter'
     | '/contact'
+    | '/dashboard'
     | '/login'
     | '/membership'
     | '/news/$id'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/beliefs'
     | '/charter'
     | '/contact'
+    | '/dashboard'
     | '/login'
     | '/membership'
     | '/news/$id'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   BeliefsRoute: typeof BeliefsRoute
   CharterRoute: typeof CharterRoute
   ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
   NewsIdRoute: typeof NewsIdRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   BeliefsRoute: BeliefsRoute,
   CharterRoute: CharterRoute,
   ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
   NewsIdRoute: NewsIdRoute,
