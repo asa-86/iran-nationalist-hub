@@ -234,3 +234,249 @@ export async function createNews(
 
   return data as CreatedNews;
 }
+
+export type ManagedNewsStatus =
+  | "draft"
+  | "pending_review"
+  | "published"
+  | "rejected";
+
+export type ManagedNewsItem = {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  status: ManagedNewsStatus;
+  rejectionReason: string | null;
+  secretariatId: string | null;
+  secretariatName: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+};
+
+type ManagedNewsRow = {
+  id: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  status: ManagedNewsStatus;
+  rejection_reason: string | null;
+  secretariat_id: string | null;
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+  secretariats:
+    | {
+        name: string;
+      }
+    | {
+        name: string;
+      }[]
+    | null;
+};
+
+function getManagedSecretariatName(
+  secretariats: ManagedNewsRow["secretariats"],
+) {
+  if (!secretariats) {
+    return "بدون دبیرخانه";
+  }
+
+  if (Array.isArray(secretariats)) {
+    return secretariats[0]?.name ?? "بدون دبیرخانه";
+  }
+
+  return secretariats.name;
+}
+
+function mapManagedNews(
+  row: ManagedNewsRow,
+): ManagedNewsItem {
+  return {
+    id: row.id,
+    title: row.title,
+    excerpt: row.excerpt ?? "",
+    content: row.content,
+    status: row.status,
+    rejectionReason: row.rejection_reason,
+    secretariatId: row.secretariat_id,
+    secretariatName: getManagedSecretariatName(
+      row.secretariats,
+    ),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    publishedAt: row.published_at,
+  };
+}
+
+export async function getMyNews(): Promise<
+  ManagedNewsItem[]
+> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("کاربر وارد حساب نشده است.");
+  }
+
+  const { data, error } = await supabase
+    .from("news")
+    .select(
+      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+    )
+    .eq("author_id", user.id)
+    .order("created_at", {
+      ascending: false,
+    });
+
+  if (error) {
+    console.error(
+      "Failed to fetch user news:",
+      error,
+    );
+    throw error;
+  }
+
+  return (data ?? []).map((row) =>
+    mapManagedNews(row as ManagedNewsRow),
+  );
+}
+
+export async function getMyNewsById(
+  id: string,
+): Promise<ManagedNewsItem | null> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("کاربر وارد حساب نشده است.");
+  }
+
+  const { data, error } = await supabase
+    .from("news")
+    .select(
+      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+    )
+    .eq("id", id)
+    .eq("author_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error(
+      "Failed to fetch user news item:",
+      error,
+    );
+    throw error;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return mapManagedNews(
+    data as ManagedNewsRow,
+  );
+}
+
+export type UpdateOwnNewsInput = {
+  title: string;
+  excerpt: string;
+  content: string;
+  secretariatId: string | null;
+};
+
+export async function updateOwnNews(
+  id: string,
+  input: UpdateOwnNewsInput,
+) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("کاربر وارد حساب نشده است.");
+  }
+
+  const title = input.title.trim();
+  const excerpt = input.excerpt.trim();
+  const content = input.content.trim();
+
+  if (!title) {
+    throw new Error("عنوان خبر الزامی است.");
+  }
+
+  if (!content) {
+    throw new Error("متن خبر الزامی است.");
+  }
+
+  const { error } = await supabase
+    .from("news")
+    .update({
+      title,
+      excerpt: excerpt || null,
+      content,
+      secretariat_id: input.secretariatId,
+    })
+    .eq("id", id)
+    .eq("author_id", user.id);
+
+  if (error) {
+    console.error(
+      "Failed to update news:",
+      error,
+    );
+    throw error;
+  }
+}
+
+export async function submitNewsForReview(
+  id: string,
+) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("کاربر وارد حساب نشده است.");
+  }
+
+  const { error } = await supabase
+    .from("news")
+    .update({
+      status: "pending_review",
+    })
+    .eq("id", id)
+    .eq("author_id", user.id)
+    .in("status", ["draft", "rejected"]);
+
+  if (error) {
+    console.error(
+      "Failed to submit news for review:",
+      error,
+    );
+    throw error;
+  }
+}
