@@ -84,7 +84,30 @@ function SecretariatPage() {
           )}
         </div>
       </section>
-
+      
+      {sec.posterUrl && (
+      
+        <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
+        
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+      
+            <img
+      
+              src={sec.posterUrl}
+      
+              alt={`پوستر ${sec.name}`}
+      
+              className="h-auto w-full object-cover"
+      
+              loading="lazy"
+      
+            />
+      
+          </div>
+      
+        </section>
+      
+      )}
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[2fr_1fr]">
         <div>
           <section>

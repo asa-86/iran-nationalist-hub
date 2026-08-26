@@ -11,6 +11,7 @@ export type Secretariat = {
   slug: string;
   name: string;
   logo: string;
+  posterUrl: string;
   tagline: string;
   description: string;
   members: SecretariatMember[];
@@ -24,6 +25,7 @@ type SecretariatRow = {
   description: string | null;
   tagline: string | null;
   logo_url: string | null;
+  poster_url: string | null;
   display_order: number;
 };
 
@@ -33,6 +35,7 @@ function mapSecretariat(row: SecretariatRow): Secretariat {
     slug: row.slug,
     name: row.name,
     logo: row.logo_url ?? "",
+    posterUrl: row.poster_url ?? "",
     tagline: row.tagline ?? "",
     description: row.description ?? "",
     members: [],
@@ -53,6 +56,7 @@ export async function getSecretariats(): Promise<Secretariat[]> {
       description,
       tagline,
       logo_url,
+      poster_url,
       display_order
     `)
     .eq("is_active", true)
@@ -83,6 +87,7 @@ export async function getSecretariatBySlug(
       description,
       tagline,
       logo_url,
+      poster_url,
       display_order
     `)
     .eq("slug", slug)
