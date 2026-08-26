@@ -20,10 +20,10 @@ import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as SecretariatsSlugRouteImport } from './routes/secretariats.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as DashboardNewsRouteImport } from './routes/dashboard_.news'
-import { Route as DashboardNewsReviewRouteImport } from './routes/dashboard_.news.review'
-import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news.new'
-import { Route as DashboardNewsIdReviewRouteImport } from './routes/dashboard_.news.$id.review'
-import { Route as DashboardNewsIdEditRouteImport } from './routes/dashboard_.news.$id.edit'
+import { Route as DashboardNewsReviewRouteImport } from './routes/dashboard_.news_.review'
+import { Route as DashboardNewsNewRouteImport } from './routes/dashboard_.news_.new'
+import { Route as DashboardNewsIdReviewRouteImport } from './routes/dashboard_.news_.$id.review'
+import { Route as DashboardNewsIdEditRouteImport } from './routes/dashboard_.news_.$id.edit'
 
 const MembershipRoute = MembershipRouteImport.update({
   id: '/membership',
@@ -81,24 +81,24 @@ const DashboardNewsRoute = DashboardNewsRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNewsReviewRoute = DashboardNewsReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => DashboardNewsRoute,
+  id: '/dashboard_/news_/review',
+  path: '/dashboard/news/review',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNewsNewRoute = DashboardNewsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => DashboardNewsRoute,
+  id: '/dashboard_/news_/new',
+  path: '/dashboard/news/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNewsIdReviewRoute = DashboardNewsIdReviewRouteImport.update({
-  id: '/$id/review',
-  path: '/$id/review',
-  getParentRoute: () => DashboardNewsRoute,
+  id: '/dashboard_/news_/$id/review',
+  path: '/dashboard/news/$id/review',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardNewsIdEditRoute = DashboardNewsIdEditRouteImport.update({
-  id: '/$id/edit',
-  path: '/$id/edit',
-  getParentRoute: () => DashboardNewsRoute,
+  id: '/dashboard_/news_/$id/edit',
+  path: '/dashboard/news/$id/edit',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -109,7 +109,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/dashboard/news': typeof DashboardNewsRouteWithChildren
+  '/dashboard/news': typeof DashboardNewsRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
@@ -126,7 +126,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/dashboard/news': typeof DashboardNewsRouteWithChildren
+  '/dashboard/news': typeof DashboardNewsRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news': typeof NewsIndexRoute
@@ -144,14 +144,14 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/dashboard_/news': typeof DashboardNewsRouteWithChildren
+  '/dashboard_/news': typeof DashboardNewsRoute
   '/news/$id': typeof NewsIdRoute
   '/secretariats/$slug': typeof SecretariatsSlugRoute
   '/news/': typeof NewsIndexRoute
-  '/dashboard_/news/new': typeof DashboardNewsNewRoute
-  '/dashboard_/news/review': typeof DashboardNewsReviewRoute
-  '/dashboard_/news/$id/edit': typeof DashboardNewsIdEditRoute
-  '/dashboard_/news/$id/review': typeof DashboardNewsIdReviewRoute
+  '/dashboard_/news_/new': typeof DashboardNewsNewRoute
+  '/dashboard_/news_/review': typeof DashboardNewsReviewRoute
+  '/dashboard_/news_/$id/edit': typeof DashboardNewsIdEditRoute
+  '/dashboard_/news_/$id/review': typeof DashboardNewsIdReviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,10 +201,10 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/secretariats/$slug'
     | '/news/'
-    | '/dashboard_/news/new'
-    | '/dashboard_/news/review'
-    | '/dashboard_/news/$id/edit'
-    | '/dashboard_/news/$id/review'
+    | '/dashboard_/news_/new'
+    | '/dashboard_/news_/review'
+    | '/dashboard_/news_/$id/edit'
+    | '/dashboard_/news_/$id/review'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -215,10 +215,14 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
-  DashboardNewsRoute: typeof DashboardNewsRouteWithChildren
+  DashboardNewsRoute: typeof DashboardNewsRoute
   NewsIdRoute: typeof NewsIdRoute
   SecretariatsSlugRoute: typeof SecretariatsSlugRoute
   NewsIndexRoute: typeof NewsIndexRoute
+  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
+  DashboardNewsReviewRoute: typeof DashboardNewsReviewRoute
+  DashboardNewsIdEditRoute: typeof DashboardNewsIdEditRoute
+  DashboardNewsIdReviewRoute: typeof DashboardNewsIdReviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -300,54 +304,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNewsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard_/news/review': {
-      id: '/dashboard_/news/review'
-      path: '/review'
+    '/dashboard_/news_/review': {
+      id: '/dashboard_/news_/review'
+      path: '/dashboard/news/review'
       fullPath: '/dashboard/news/review'
       preLoaderRoute: typeof DashboardNewsReviewRouteImport
-      parentRoute: typeof DashboardNewsRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard_/news/new': {
-      id: '/dashboard_/news/new'
-      path: '/new'
+    '/dashboard_/news_/new': {
+      id: '/dashboard_/news_/new'
+      path: '/dashboard/news/new'
       fullPath: '/dashboard/news/new'
       preLoaderRoute: typeof DashboardNewsNewRouteImport
-      parentRoute: typeof DashboardNewsRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard_/news/$id/review': {
-      id: '/dashboard_/news/$id/review'
-      path: '/$id/review'
+    '/dashboard_/news_/$id/review': {
+      id: '/dashboard_/news_/$id/review'
+      path: '/dashboard/news/$id/review'
       fullPath: '/dashboard/news/$id/review'
       preLoaderRoute: typeof DashboardNewsIdReviewRouteImport
-      parentRoute: typeof DashboardNewsRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard_/news/$id/edit': {
-      id: '/dashboard_/news/$id/edit'
-      path: '/$id/edit'
+    '/dashboard_/news_/$id/edit': {
+      id: '/dashboard_/news_/$id/edit'
+      path: '/dashboard/news/$id/edit'
       fullPath: '/dashboard/news/$id/edit'
       preLoaderRoute: typeof DashboardNewsIdEditRouteImport
-      parentRoute: typeof DashboardNewsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface DashboardNewsRouteChildren {
-  DashboardNewsNewRoute: typeof DashboardNewsNewRoute
-  DashboardNewsReviewRoute: typeof DashboardNewsReviewRoute
-  DashboardNewsIdEditRoute: typeof DashboardNewsIdEditRoute
-  DashboardNewsIdReviewRoute: typeof DashboardNewsIdReviewRoute
-}
-
-const DashboardNewsRouteChildren: DashboardNewsRouteChildren = {
-  DashboardNewsNewRoute: DashboardNewsNewRoute,
-  DashboardNewsReviewRoute: DashboardNewsReviewRoute,
-  DashboardNewsIdEditRoute: DashboardNewsIdEditRoute,
-  DashboardNewsIdReviewRoute: DashboardNewsIdReviewRoute,
-}
-
-const DashboardNewsRouteWithChildren = DashboardNewsRoute._addFileChildren(
-  DashboardNewsRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -357,10 +343,14 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
-  DashboardNewsRoute: DashboardNewsRouteWithChildren,
+  DashboardNewsRoute: DashboardNewsRoute,
   NewsIdRoute: NewsIdRoute,
   SecretariatsSlugRoute: SecretariatsSlugRoute,
   NewsIndexRoute: NewsIndexRoute,
+  DashboardNewsNewRoute: DashboardNewsNewRoute,
+  DashboardNewsReviewRoute: DashboardNewsReviewRoute,
+  DashboardNewsIdEditRoute: DashboardNewsIdEditRoute,
+  DashboardNewsIdReviewRoute: DashboardNewsIdReviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -28,7 +28,7 @@ import {
 } from "@/services/secretariats";
 
 export const Route = createFileRoute(
-  "/dashboard_/news/$id/review",
+  "/dashboard_/news_/$id/review",
 )({
   component: ReviewNewsPage,
 });

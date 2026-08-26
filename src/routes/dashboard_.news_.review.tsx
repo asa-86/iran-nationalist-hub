@@ -16,7 +16,7 @@ import {
 } from "@/services/news";
 
 export const Route = createFileRoute(
-  "/dashboard_/news/review",
+  "/dashboard_/news_/review",
 )({
   component: NewsReviewQueuePage,
 });
