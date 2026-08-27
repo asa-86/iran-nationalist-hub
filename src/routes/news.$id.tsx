@@ -131,6 +131,17 @@ function NewsDetail() {
         </div>
       )}
 
+      {/* عکس */}
+      {item.coverImageUrl && (
+        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-muted">
+          <img
+            src={item.coverImageUrl}
+            alt={item.title}
+            className="h-auto w-full object-cover"
+          />
+        </div>
+      )}
+
       {/* متن خبر */}
       <div className="prose prose-neutral mt-8 max-w-none text-[15px] leading-9 text-foreground/90 prose-p:my-6">
         <ReactMarkdown>

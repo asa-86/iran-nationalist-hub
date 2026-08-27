@@ -8,6 +8,7 @@ export type NewsItem = {
   author: string;
   secretariatSlug: string;
   secretariatName: string;
+  coverImageUrl: string;
   publishedAt: string;
 };
 
@@ -17,6 +18,7 @@ type NewsQueryRow = {
   excerpt: string | null;
   content: string;
   published_at: string | null;
+  cover_image_url: string | null;
   secretariats:
     | {
         slug: string;
@@ -66,6 +68,7 @@ function mapNews(row: NewsQueryRow): NewsItem {
     author: "",
     secretariatSlug: secretariat.slug,
     secretariatName: secretariat.name,
+    coverImageUrl: row.cover_image_url ?? "",
     publishedAt: row.published_at ?? "",
   };
 }
@@ -74,7 +77,7 @@ export async function getNews(): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,published_at,secretariats(slug,name)",
+      "id,title,excerpt,content,cover_image_url,published_at,secretariats(slug,name)",
     )
     .eq("status", "published")
     .order("published_at", { ascending: false });
@@ -95,7 +98,7 @@ export async function getNewsById(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,published_at,secretariats(slug,name)",
+      "id,title,excerpt,content,cover_image_url,published_at,secretariats(slug,name)",
     )
     .eq("id", id)
     .eq("status", "published")
@@ -119,7 +122,7 @@ export async function getNewsBySecretariat(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,published_at,secretariats!inner(slug,name)",
+      "id,title,excerpt,content,cover_image_url,published_at,secretariats!inner(slug,name)",
     )
     .eq("status", "published")
     .eq("secretariats.slug", slug)
@@ -153,6 +156,7 @@ export type CreateNewsInput = {
   title: string;
   excerpt: string;
   content: string;
+  coverImageUrl: string;
   secretariatId: string | null;
   categoryId?: string | null;
   status?: "draft" | "pending_review" | "published";
@@ -197,6 +201,7 @@ export async function createNews(
   const title = input.title.trim();
   const excerpt = input.excerpt.trim();
   const content = input.content.trim();
+  const coverImageUrl = input.coverImageUrl.trim();
 
   if (!title) {
     throw new Error("عنوان خبر الزامی است.");
@@ -214,6 +219,7 @@ export async function createNews(
       title,
       slug: createSlug(title),
       excerpt: excerpt || null,
+      cover_image_url: coverImageUrl || null,
       content,
       author_id: user.id,
       secretariat_id: input.secretariatId,
@@ -246,6 +252,7 @@ export type ManagedNewsItem = {
   title: string;
   excerpt: string;
   content: string;
+  coverImageUrl: string;
   status: ManagedNewsStatus;
   rejectionReason: string | null;
   secretariatId: string | null;
@@ -260,6 +267,7 @@ type ManagedNewsRow = {
   title: string;
   excerpt: string | null;
   content: string;
+  cover_image_url: string | null;
   status: ManagedNewsStatus;
   rejection_reason: string | null;
   secretariat_id: string | null;
@@ -297,6 +305,7 @@ function mapManagedNews(
     id: row.id,
     title: row.title,
     excerpt: row.excerpt ?? "",
+    coverImageUrl: row.cover_image_url ?? "",
     content: row.content,
     status: row.status,
     rejectionReason: row.rejection_reason,
@@ -329,7 +338,7 @@ export async function getMyNews(): Promise<
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("author_id", user.id)
     .order("created_at", {
@@ -368,7 +377,7 @@ export async function getMyNewsById(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("id", id)
     .eq("author_id", user.id)
@@ -395,6 +404,7 @@ export type UpdateOwnNewsInput = {
   title: string;
   excerpt: string;
   content: string;
+  coverImageUrl: string;
   secretariatId: string | null;
 };
 
@@ -430,6 +440,7 @@ export async function updateOwnNews(
   const { error } = await supabase
     .from("news")
     .update({
+      cover_image_url: input.coverImageUrl.trim() || null,
       title,
       excerpt: excerpt || null,
       content,
@@ -511,7 +522,7 @@ export async function getPendingNews(): Promise<
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("status", "pending_review")
     .order("updated_at", {
@@ -545,7 +556,7 @@ export async function getReviewNewsById(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("id", id)
     .eq("status", "pending_review")
@@ -572,6 +583,7 @@ export type ReviewNewsUpdateInput = {
   title: string;
   excerpt: string;
   content: string;
+  coverImageUrl: string;
   secretariatId: string | null;
 };
 
@@ -604,6 +616,7 @@ export async function updateReviewNews(
     .update({
       title,
       excerpt: excerpt || null,
+      cover_image_url: input.coverImageUrl.trim() || null,
       content,
       secretariat_id: input.secretariatId,
     })

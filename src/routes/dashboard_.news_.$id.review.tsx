@@ -38,6 +38,8 @@ function ReviewNewsPage() {
 
   const navigate = useNavigate();
 
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+
   const [secretariats, setSecretariats] =
     useState<Secretariat[]>([]);
 
@@ -86,6 +88,7 @@ function ReviewNewsPage() {
         }
 
         setTitle(item.title);
+        setCoverImageUrl(item.coverImageUrl);
         setExcerpt(item.excerpt);
         setContent(item.content);
 
@@ -123,6 +126,7 @@ function ReviewNewsPage() {
       title,
       excerpt,
       content,
+      coverImageUrl,
       secretariatId:
         secretariatId || null,
     });
@@ -260,6 +264,25 @@ function ReviewNewsPage() {
               setTitle(event.target.value)
             }
             className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3"
+          />
+
+          <label
+            htmlFor="coverImageUrl"
+            className="mb-2 block text-sm font-bold"
+          >
+            لینک تصویر شاخص خبر
+          </label>
+                      
+          <input
+            id="coverImageUrl"
+            type="url"
+            value={coverImageUrl}
+            onChange={(event) =>
+              setCoverImageUrl(event.target.value)
+            }
+            dir="ltr"
+            className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
+            placeholder="https://example.com/image.jpg"
           />
 
           <label className="mt-5 block text-sm font-bold">

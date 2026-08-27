@@ -41,6 +41,7 @@ function NewNewsPage() {
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const [secretariatId, setSecretariatId] =
     useState("");
 
@@ -145,6 +146,7 @@ function NewNewsPage() {
         title,
         excerpt,
         content,
+        coverImageUrl,
         secretariatId:
           secretariatId || null,
         status,
@@ -161,6 +163,7 @@ function NewNewsPage() {
       }
 
       setTitle("");
+      setCoverImageUrl("");
       setExcerpt("");
       setContent("");
       setSecretariatId("");
@@ -284,6 +287,37 @@ function NewNewsPage() {
               className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
               placeholder="عنوان خبر را وارد کنید"
             />
+          </div>
+
+          <div className="mt-5">
+            <label
+              htmlFor="coverImageUrl"
+              className="mb-2 block text-sm font-bold"
+            >
+              لینک تصویر شاخص خبر
+            </label>
+                      
+            <input
+              id="coverImageUrl"
+              type="url"
+              value={coverImageUrl}
+              onChange={(event) =>
+                setCoverImageUrl(event.target.value)
+              }
+              dir="ltr"
+              className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
+              placeholder="https://example.com/image.jpg"
+            />
+          
+            {coverImageUrl && (
+              <div className="mt-3 overflow-hidden rounded-lg border border-border">
+                <img
+                  src={coverImageUrl}
+                  alt="پیش‌نمایش تصویر شاخص"
+                  className="max-h-80 w-full object-cover"
+                />
+              </div>
+            )}
           </div>
 
           <div className="mt-5">

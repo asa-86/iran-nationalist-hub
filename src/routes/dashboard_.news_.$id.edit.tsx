@@ -35,6 +35,8 @@ function EditNewsPage() {
 
   const navigate = useNavigate();
 
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+
   const [secretariats, setSecretariats] =
     useState<Secretariat[]>([]);
 
@@ -93,6 +95,7 @@ function EditNewsPage() {
         }
 
         setTitle(item.title);
+        setCoverImageUrl(item.coverImageUrl);
         setExcerpt(item.excerpt);
         setContent(item.content);
         setSecretariatId(
@@ -131,6 +134,7 @@ function EditNewsPage() {
       title,
       excerpt,
       content,
+      coverImageUrl,
       secretariatId:
         secretariatId || null,
     });
@@ -252,6 +256,37 @@ function EditNewsPage() {
                 }
                 className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm"
               />
+            </div>
+
+            <div className="mt-5">
+              <label
+                htmlFor="coverImageUrl"
+                className="mb-2 block text-sm font-bold"
+              >
+                لینک تصویر شاخص خبر
+              </label>
+                          
+              <input
+                id="coverImageUrl"
+                type="url"
+                value={coverImageUrl}
+                onChange={(event) =>
+                  setCoverImageUrl(event.target.value)
+                }
+                dir="ltr"
+                className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
+                placeholder="https://example.com/image.jpg"
+              />
+            
+              {coverImageUrl && (
+                <div className="mt-3 overflow-hidden rounded-lg border border-border">
+                  <img
+                    src={coverImageUrl}
+                    alt="پیش‌نمایش تصویر شاخص"
+                    className="max-h-80 w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mt-5">
