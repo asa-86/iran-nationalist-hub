@@ -10,35 +10,40 @@ export function NewsCard({ item }: { item: NewsItem }) {
     <Link
       to="/news/$id"
       params={{ id: item.id }}
-      className="group block rounded-lg border border-border bg-card p-5 shadow-card transition-shadow hover:shadow-soft"
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all hover:-translate-y-0.5 hover:shadow-soft"
     >
-      <div className="flex items-center gap-2 text-xs">
-        <span className="rounded-md bg-brand/10 px-2 py-1 font-medium text-brand">
-          {item.coverImageUrl && (
-            <div className="-mx-5 -mt-5 mb-4 overflow-hidden rounded-t-lg">
-              <img
-                src={item.coverImageUrl}
-                alt={item.title}
-                loading="lazy"
-                className="aspect-[16/9] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              />
-            </div>
-          )}
-          {item.secretariatName || "حزب"}
-        </span>
+      {item.coverImageUrl && (
+        <div className="aspect-[16/9] w-full overflow-hidden bg-muted">
+          <img
+            src={item.coverImageUrl}
+            alt={item.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        </div>
+      )}
 
-        <span className="text-muted-foreground">
-          {formatDate(item.publishedAt)}
-        </span>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="max-w-full truncate rounded-md bg-brand/10 px-2 py-1 font-medium text-brand">
+            {item.secretariatName || "حزب"}
+          </span>
+
+          <span className="text-muted-foreground">
+            {formatDate(item.publishedAt)}
+          </span>
+        </div>
+
+        <h3 className="mt-3 line-clamp-2 min-h-[3.5rem] text-base font-bold leading-7 text-ink transition-colors group-hover:text-brand">
+          {item.title}
+        </h3>
+
+        {item.excerpt && (
+          <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted-foreground">
+            {item.excerpt}
+          </p>
+        )}
       </div>
-
-      <h3 className="mt-3 text-base font-bold leading-7 text-ink group-hover:text-brand">
-        {item.title}
-      </h3>
-
-      <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted-foreground">
-        {item.excerpt}
-      </p>
     </Link>
   );
 }
