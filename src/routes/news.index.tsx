@@ -103,7 +103,7 @@ function NewsList() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
         {loading && (
           <div className="col-span-full rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
             در حال دریافت اخبار...

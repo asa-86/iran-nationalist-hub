@@ -35,7 +35,7 @@ function Index() {
       });
   }, []);
 
-  const latestNews = news.slice(0, 4);
+  const latestNews = news.slice(0, 3);
   const announcements = news.slice(0, 3);
   const latestAnnouncement = announcements[0];
 
@@ -140,7 +140,7 @@ function Index() {
           </Link>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {latestNews.map((item) => (
             <NewsCard
               key={item.id}

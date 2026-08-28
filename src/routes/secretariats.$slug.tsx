@@ -125,7 +125,7 @@ function SecretariatPage() {
               اخبار این دبیرخانه
             </h2>
 
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid items-stretch gap-6 sm:grid-cols-2">
               {items.length === 0 && (
                 <p className="col-span-full rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
                   خبری برای این دبیرخانه ثبت نشده است.
