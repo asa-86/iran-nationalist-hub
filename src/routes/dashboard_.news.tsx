@@ -42,6 +42,9 @@ function MyNewsPage() {
   const [items, setItems] = useState<
     ManagedNewsItem[]
   >([]);
+  const [currentUserId, setCurrentUserId] = useState("");
+  const [canEditAny, setCanEditAny] = useState(false);
+  const [canPublish, setCanPublish] = useState(false);
 
   const [loading, setLoading] =
     useState(true);
@@ -65,6 +68,18 @@ function MyNewsPage() {
         return;
       }
 
+      setCurrentUserId(user.id);
+      setCanEditAny(
+        user.permissions.some(
+          (permission) => permission.name === "news.edit_any",
+        ),
+      );
+      setCanPublish(
+        user.permissions.some(
+          (permission) => permission.name === "news.publish",
+        ),
+      );
+
       const news = await getMyNews();
 
       setItems(news);
@@ -75,7 +90,7 @@ function MyNewsPage() {
       );
 
       setErrorMessage(
-        "دریافت خبرهای شما با مشکل مواجه شد.",
+        "دریافت مطالب شما با مشکل مواجه شد.",
       );
     } finally {
       setLoading(false);
@@ -105,7 +120,7 @@ function MyNewsPage() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "ارسال خبر برای بررسی با مشکل مواجه شد.",
+          : "ارسال مطلب برای بررسی با مشکل مواجه شد.",
       );
     } finally {
       setSubmittingId(null);
@@ -116,7 +131,7 @@ function MyNewsPage() {
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-7xl items-center justify-center px-4">
         <div className="text-sm text-muted-foreground">
-          در حال دریافت خبرها...
+          در حال دریافت مطالب...
         </div>
       </div>
     );
@@ -131,7 +146,7 @@ function MyNewsPage() {
           </div>
 
           <h1 className="mt-1 text-2xl font-black text-ink md:text-3xl">
-            خبرهای من
+            مطالب من
           </h1>
         </div>
 
@@ -141,7 +156,7 @@ function MyNewsPage() {
             className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-bold text-brand-foreground hover:bg-brand/90"
           >
             <FilePlus2 className="h-4 w-4" />
-            افزودن خبر
+            افزودن مطلب
           </Link>
 
           <Link
@@ -165,19 +180,24 @@ function MyNewsPage() {
           <FilePenLine className="mx-auto h-8 w-8 text-muted-foreground" />
 
           <h2 className="mt-4 font-black text-ink">
-            هنوز خبری ثبت نکرده‌اید
+            هنوز مطلبی ثبت نکرده‌اید
           </h2>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            اولین خبر خود را ایجاد کنید.
+            اولین مطلب خود را ایجاد کنید.
           </p>
         </div>
       ) : (
         <div className="mt-8 space-y-4">
           {items.map((item) => {
             const editable =
-              item.status === "draft" ||
-              item.status === "rejected";
+              canEditAny
+                ? item.status !== "published" || canPublish
+                : item.authorId === currentUserId &&
+                  (item.status === "draft" || item.status === "rejected");
+            const canSubmit =
+              item.authorId === currentUserId &&
+              (item.status === "draft" || item.status === "rejected");
 
             return (
               <article
@@ -235,24 +255,19 @@ function MyNewsPage() {
                         ویرایش
                       </Link>
 
-                      <button
-                        type="button"
-                        disabled={
-                          submittingId === item.id
-                        }
-                        onClick={() =>
-                          void handleSubmitForReview(
-                            item.id,
-                          )
-                        }
-                        className="inline-flex items-center gap-2 rounded-md bg-brand px-3 py-2 text-sm font-bold text-brand-foreground hover:bg-brand/90 disabled:opacity-60"
-                      >
-                        <Send className="h-4 w-4" />
-
-                        {submittingId === item.id
-                          ? "در حال ارسال..."
-                          : "ارسال برای بررسی"}
-                      </button>
+                      {canSubmit && (
+                        <button
+                          type="button"
+                          disabled={submittingId === item.id}
+                          onClick={() => void handleSubmitForReview(item.id)}
+                          className="inline-flex items-center gap-2 rounded-md bg-brand px-3 py-2 text-sm font-bold text-brand-foreground hover:bg-brand/90 disabled:opacity-60"
+                        >
+                          <Send className="h-4 w-4" />
+                          {submittingId === item.id
+                            ? "در حال ارسال..."
+                            : "ارسال برای بررسی"}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

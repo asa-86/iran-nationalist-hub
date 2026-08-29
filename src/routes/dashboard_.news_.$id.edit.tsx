@@ -23,6 +23,9 @@ import {
   getSecretariats,
   type Secretariat,
 } from "@/services/secretariats";
+import { getCurrentUser } from "@/services/auth";
+import { NewsContentTextarea } from "@/components/dashboard/NewsContentTextarea";
+import { normalizeNewsImageLinks } from "@/lib/news-content";
 
 export const Route = createFileRoute(
   "/dashboard_/news_/$id/edit",
@@ -41,6 +44,7 @@ function EditNewsPage() {
     useState<Secretariat[]>([]);
 
   const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] =
     useState("");
   const [content, setContent] =
@@ -67,10 +71,11 @@ function EditNewsPage() {
 
     async function loadPage() {
       try {
-        const [item, secretariatData] =
+        const [item, secretariatData, user] =
           await Promise.all([
             getMyNewsById(id),
             getSecretariats(),
+            getCurrentUser(),
           ]);
 
         if (!active) {
@@ -79,22 +84,32 @@ function EditNewsPage() {
 
         if (!item) {
           setErrorMessage(
-            "خبر مورد نظر پیدا نشد.",
+            "مطلب مورد نظر پیدا نشد.",
           );
           return;
         }
 
-        if (
-          item.status !== "draft" &&
-          item.status !== "rejected"
-        ) {
+        const canEditAny = user?.permissions.some(
+          (permission) => permission.name === "news.edit_any",
+        );
+        const canPublish = user?.permissions.some(
+          (permission) => permission.name === "news.publish",
+        );
+        const isOwner = item.authorId === user?.id;
+        const editable = canEditAny
+          ? item.status !== "published" || canPublish
+          : isOwner &&
+            (item.status === "draft" || item.status === "rejected");
+
+        if (!editable) {
           setErrorMessage(
-            "این خبر در وضعیت فعلی قابل ویرایش نیست.",
+            "این مطلب در وضعیت فعلی قابل ویرایش نیست.",
           );
           return;
         }
 
         setTitle(item.title);
+        setAuthor(item.author);
         setCoverImageUrl(item.coverImageUrl);
         setExcerpt(item.excerpt);
         setContent(item.content);
@@ -113,7 +128,7 @@ function EditNewsPage() {
         );
 
         setErrorMessage(
-          "دریافت اطلاعات خبر با مشکل مواجه شد.",
+          "دریافت اطلاعات مطلب با مشکل مواجه شد.",
         );
       } finally {
         if (active) {
@@ -132,8 +147,9 @@ function EditNewsPage() {
   async function save() {
     await updateOwnNews(id, {
       title,
+      author,
       excerpt,
-      content,
+      content: normalizeNewsImageLinks(content),
       coverImageUrl,
       secretariatId:
         secretariatId || null,
@@ -153,7 +169,7 @@ function EditNewsPage() {
       await save();
 
       setSuccessMessage(
-        "تغییرات خبر ذخیره شد.",
+        "تغییرات مطلب ذخیره شد.",
       );
     } catch (error) {
       console.error(error);
@@ -187,7 +203,7 @@ function EditNewsPage() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "ارسال خبر برای بررسی با مشکل مواجه شد.",
+          : "ارسال مطلب برای بررسی با مشکل مواجه شد.",
       );
     } finally {
       setSaving(false);
@@ -198,7 +214,7 @@ function EditNewsPage() {
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-7xl items-center justify-center px-4">
         <div className="text-sm text-muted-foreground">
-          در حال دریافت خبر...
+          در حال دریافت مطلب...
         </div>
       </div>
     );
@@ -209,11 +225,11 @@ function EditNewsPage() {
       <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
           <div className="text-sm text-muted-foreground">
-            مدیریت اخبار
+            مدیریت مطالب
           </div>
 
           <h1 className="mt-1 text-2xl font-black text-ink">
-            ویرایش خبر
+            ویرایش مطلب
           </h1>
 
           {status && (
@@ -230,7 +246,7 @@ function EditNewsPage() {
           className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-bold hover:bg-accent"
         >
           <ArrowRight className="h-4 w-4" />
-          خبرهای من
+          مطالب من
         </Link>
       </div>
 
@@ -259,11 +275,25 @@ function EditNewsPage() {
             </div>
 
             <div className="mt-5">
+              <label className="mb-2 block text-sm font-bold">
+                نام نویسنده
+              </label>
+
+              <input
+                value={author}
+                onChange={(event) => setAuthor(event.target.value)}
+                required
+                className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm"
+                placeholder="نام نویسنده مطلب را وارد کنید"
+              />
+            </div>
+
+            <div className="mt-5">
               <label
                 htmlFor="coverImageUrl"
                 className="mb-2 block text-sm font-bold"
               >
-                لینک تصویر شاخص خبر
+                لینک تصویر شاخص مطلب
               </label>
                           
               <input
@@ -339,19 +369,18 @@ function EditNewsPage() {
 
             <div className="mt-5">
               <label className="mb-2 block text-sm font-bold">
-                متن خبر
+                متن مطلب
               </label>
 
-              <textarea
+              <NewsContentTextarea
                 value={content}
-                onChange={(event) =>
-                  setContent(
-                    event.target.value,
-                  )
-                }
+                onValueChange={setContent}
                 rows={15}
                 className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm leading-8"
               />
+              <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                لینک مستقیم تصویر را در خط دلخواه قرار دهید؛ لینک خودکار به تصویر تبدیل می‌شود.
+              </p>
             </div>
           </div>
 

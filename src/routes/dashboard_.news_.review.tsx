@@ -51,7 +51,7 @@ function NewsReviewQueuePage() {
           setErrorMessage(
             error instanceof Error
               ? error.message
-              : "دریافت اخبار با مشکل مواجه شد.",
+              : "دریافت مطالب با مشکل مواجه شد.",
           );
         }
       } finally {
@@ -71,7 +71,7 @@ function NewsReviewQueuePage() {
   if (loading) {
     return (
       <div className="mx-auto flex min-h-[60vh] items-center justify-center">
-        در حال دریافت اخبار...
+        در حال دریافت مطالب...
       </div>
     );
   }
@@ -85,7 +85,7 @@ function NewsReviewQueuePage() {
           </div>
 
           <h1 className="mt-1 text-2xl font-black text-ink">
-            اخبار در انتظار بررسی
+            مطالب در انتظار بررسی
           </h1>
         </div>
 
@@ -109,7 +109,7 @@ function NewsReviewQueuePage() {
           <ClipboardCheck className="mx-auto h-8 w-8 text-muted-foreground" />
 
           <div className="mt-3 font-bold">
-            خبری در انتظار بررسی نیست.
+            مطلبی در انتظار بررسی نیست.
           </div>
         </div>
       )}
@@ -150,7 +150,7 @@ function NewsReviewQueuePage() {
                 }}
                 className="shrink-0 rounded-md bg-brand px-4 py-2 text-sm font-bold text-brand-foreground"
               >
-                بررسی خبر
+                بررسی مطلب
               </Link>
             </div>
           </article>

@@ -26,6 +26,8 @@ import {
   getSecretariats,
   type Secretariat,
 } from "@/services/secretariats";
+import { NewsContentTextarea } from "@/components/dashboard/NewsContentTextarea";
+import { normalizeNewsImageLinks } from "@/lib/news-content";
 
 export const Route = createFileRoute(
   "/dashboard_/news_/$id/review",
@@ -44,6 +46,7 @@ function ReviewNewsPage() {
     useState<Secretariat[]>([]);
 
   const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
 
@@ -82,12 +85,13 @@ function ReviewNewsPage() {
 
         if (!item) {
           setErrorMessage(
-            "خبر پیدا نشد یا دیگر در انتظار بررسی نیست.",
+            "مطلب پیدا نشد یا دیگر در انتظار بررسی نیست.",
           );
           return;
         }
 
         setTitle(item.title);
+        setAuthor(item.author);
         setCoverImageUrl(item.coverImageUrl);
         setExcerpt(item.excerpt);
         setContent(item.content);
@@ -105,7 +109,7 @@ function ReviewNewsPage() {
         setErrorMessage(
           error instanceof Error
             ? error.message
-            : "بارگذاری خبر با مشکل مواجه شد.",
+            : "بارگذاری مطلب با مشکل مواجه شد.",
         );
       } finally {
         if (active) {
@@ -124,8 +128,9 @@ function ReviewNewsPage() {
   async function saveChanges() {
     await updateReviewNews(id, {
       title,
+      author,
       excerpt,
-      content,
+      content: normalizeNewsImageLinks(content),
       coverImageUrl,
       secretariatId:
         secretariatId || null,
@@ -145,13 +150,13 @@ function ReviewNewsPage() {
       await saveChanges();
 
       setSuccessMessage(
-        "تغییرات خبر ذخیره شد.",
+        "تغییرات مطلب ذخیره شد.",
       );
     } catch (error) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "ذخیره خبر با مشکل مواجه شد.",
+          : "ذخیره مطلب با مشکل مواجه شد.",
       );
     } finally {
       setSaving(false);
@@ -175,7 +180,7 @@ function ReviewNewsPage() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "انتشار خبر با مشکل مواجه شد.",
+          : "انتشار مطلب با مشکل مواجه شد.",
       );
     } finally {
       setSaving(false);
@@ -202,7 +207,7 @@ function ReviewNewsPage() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "رد خبر با مشکل مواجه شد.",
+          : "رد مطلب با مشکل مواجه شد.",
       );
     } finally {
       setSaving(false);
@@ -212,7 +217,7 @@ function ReviewNewsPage() {
   if (loading) {
     return (
       <div className="mx-auto flex min-h-[60vh] items-center justify-center">
-        در حال دریافت خبر...
+        در حال دریافت مطلب...
       </div>
     );
   }
@@ -236,7 +241,7 @@ function ReviewNewsPage() {
           </div>
 
           <h1 className="mt-1 text-2xl font-black">
-            بررسی و ویرایش خبر
+            بررسی و ویرایش مطلب
           </h1>
         </div>
 
@@ -266,11 +271,23 @@ function ReviewNewsPage() {
             className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3"
           />
 
+          <label className="mt-5 block text-sm font-bold">
+            نام نویسنده
+          </label>
+
+          <input
+            value={author}
+            onChange={(event) => setAuthor(event.target.value)}
+            required
+            className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3"
+            placeholder="نام نویسنده مطلب را وارد کنید"
+          />
+
           <label
             htmlFor="coverImageUrl"
             className="mb-2 block text-sm font-bold"
           >
-            لینک تصویر شاخص خبر
+            لینک تصویر شاخص مطلب
           </label>
                       
           <input
@@ -326,14 +343,12 @@ function ReviewNewsPage() {
           />
 
           <label className="mt-5 block text-sm font-bold">
-            متن خبر
+            متن مطلب
           </label>
 
-          <textarea
+          <NewsContentTextarea
             value={content}
-            onChange={(event) =>
-              setContent(event.target.value)
-            }
+            onValueChange={setContent}
             rows={16}
             className="mt-2 w-full rounded-md border border-input bg-background px-4 py-3 leading-8"
           />
@@ -370,13 +385,13 @@ function ReviewNewsPage() {
             className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-3 text-sm font-bold text-brand-foreground"
           >
             <CheckCircle2 className="h-4 w-4" />
-            انتشار خبر
+            انتشار مطلب
           </button>
         </div>
 
         <div className="rounded-xl border border-destructive/20 p-5">
           <label className="text-sm font-bold">
-            رد خبر برای اصلاح
+            رد مطلب برای اصلاح
           </label>
 
           <textarea

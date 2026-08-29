@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { MessageSquare, User } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 
 import {
   formatDate,
@@ -25,11 +25,11 @@ export const Route = createFileRoute("/news/$id")({
       {
         title: loaderData
           ? `${loaderData.item.title} — NIGP`
-          : "خبر",
+          : "مطلب",
       },
       {
         name: "description",
-        content: loaderData?.item.excerpt ?? "خبر حزب",
+        content: loaderData?.item.excerpt ?? "مطلب حزب",
       },
     ],
   }),
@@ -39,14 +39,14 @@ export const Route = createFileRoute("/news/$id")({
   notFoundComponent: () => (
     <div className="mx-auto max-w-2xl px-4 py-16 text-center">
       <h1 className="text-2xl font-black">
-        خبر یافت نشد
+        مطلب یافت نشد
       </h1>
 
       <Link
         to="/news"
         className="mt-4 inline-block text-brand hover:underline"
       >
-        بازگشت به اخبار
+        بازگشت به مطالب
       </Link>
     </div>
   ),
@@ -57,6 +57,81 @@ type Comment = {
   author: string;
   text: string;
   replies: Comment[];
+};
+
+const newsMarkdownComponents: Components = {
+  h1: ({ children }) => (
+    <h1 className="mb-4 mt-9 text-3xl font-black leading-relaxed text-ink">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="mb-3 mt-8 text-2xl font-black leading-relaxed text-ink">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="mb-3 mt-7 text-xl font-black leading-relaxed text-ink">
+      {children}
+    </h3>
+  ),
+  p: ({ children }) => (
+    <p className="my-5 whitespace-pre-wrap leading-9">
+      {children}
+    </p>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-black text-ink">{children}</strong>
+  ),
+  em: ({ children }) => (
+    <em className="italic">{children}</em>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-5 rounded-l-md border-r-4 border-brand bg-muted/60 py-1 pl-3 pr-4 text-foreground/80 [&>p]:my-2 [&>p]:leading-8">
+      {children}
+    </blockquote>
+  ),
+  ul: ({ children }) => (
+    <ul className="my-6 list-outside list-disc space-y-2 pr-7">
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="my-6 list-outside list-decimal space-y-2 pr-7">
+      {children}
+    </ol>
+  ),
+  li: ({ children }) => (
+    <li className="pr-1 leading-8 marker:font-bold marker:text-brand">
+      {children}
+    </li>
+  ),
+  a: ({ children, href }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="font-bold text-brand underline decoration-brand/40 underline-offset-4 hover:decoration-brand"
+    >
+      {children}
+    </a>
+  ),
+  img: ({ src, alt }) => (
+    <img
+      src={src}
+      alt={alt || "تصویر مطلب"}
+      loading="lazy"
+      className="my-8 block h-auto max-h-[720px] w-full rounded-xl border border-border bg-muted object-contain shadow-sm"
+    />
+  ),
+  code: ({ children }) => (
+    <code
+      dir="ltr"
+      className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-ink"
+    >
+      {children}
+    </code>
+  ),
 };
 
 function NewsDetail() {
@@ -123,14 +198,6 @@ function NewsDetail() {
         {item.title}
       </h1>
 
-      {/* نویسنده */}
-      {item.author && (
-        <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <User className="h-4 w-4" />
-          نویسنده: {item.author}
-        </div>
-      )}
-
       {/* عکس */}
       {item.coverImageUrl && (
         <div className="mt-6 overflow-hidden rounded-xl border border-border bg-muted">
@@ -143,16 +210,29 @@ function NewsDetail() {
       )}
 
       {/* متن خبر */}
-      <div className="prose prose-neutral mt-8 max-w-none text-[15px] leading-9 text-foreground/90 prose-p:my-6">
-        <ReactMarkdown>
+      <div className="mt-8 max-w-none text-[15px] leading-9 text-foreground/90">
+        <ReactMarkdown components={newsMarkdownComponents}>
           {item.body}
         </ReactMarkdown>
       </div>
 
+      {/* نویسنده */}
+      {item.author && (
+        <div className="mt-8 flex items-center gap-2 border-t border-border pt-5 text-sm text-muted-foreground">
+          <User className="h-4 w-4" />
+          <span>
+            نویسنده: {" "}
+            <strong className="font-bold text-ink">
+              {item.author}
+            </strong>
+          </span>
+        </div>
+      )}
+
       {/* دبیرخانه منتشرکننده */}
       {item.secretariatSlug && (
         <div className="mt-8 rounded-lg border border-border bg-muted/40 p-4 text-sm">
-          این خبر توسط{" "}
+          این مطلب توسط{" "}
           <Link
             to="/secretariats/$slug"
             params={{ slug: item.secretariatSlug }}

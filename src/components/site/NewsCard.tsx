@@ -82,7 +82,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
 
         <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand">
           <span className="transition-transform duration-300 group-hover:-translate-x-0.5">
-            مطالعه خبر
+            مطالعه مطلب
           </span>
           <ArrowLeft
             className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1"

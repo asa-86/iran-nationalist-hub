@@ -14,7 +14,7 @@ const nav = [
   { to: "/", label: "خانه" },
   { to: "/charter", label: "اساسنامه" },
   { to: "/beliefs", label: "عقاید" },
-  { to: "/news", label: "اخبار" },
+  { to: "/news", label: "مطالب" },
   { to: "/membership", label: "عضویت" },
   { to: "/contact", label: "ارتباط با ما" },
 ] as const;

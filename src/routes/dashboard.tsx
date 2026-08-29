@@ -311,19 +311,19 @@ function DashboardPage() {
                 to="/dashboard/news/new"
                 className="inline-flex items-center rounded-md bg-brand px-4 py-3 text-sm font-bold text-brand-foreground hover:bg-brand/90"
               >
-                افزودن خبر جدید
+                افزودن مطلب جدید
               </Link>
 
               <Link
                 to="/dashboard/news"
                 className="inline-flex items-center rounded-md border border-border px-4 py-3 text-sm font-bold hover:bg-accent"
               >
-                مدیریت خبرهای من
+                مدیریت مطالب من
               </Link>
             </>
           ) : (
             <div className="rounded-md bg-muted px-4 py-3 text-sm text-muted-foreground">
-              مجوز افزودن خبر برای این حساب فعال نیست.
+              مجوز افزودن مطلب برای این حساب فعال نیست.
             </div>
           )}
 
@@ -332,7 +332,7 @@ function DashboardPage() {
               to="/dashboard/news/review"
               className="inline-flex items-center rounded-md border border-border px-4 py-3 text-sm font-bold hover:bg-accent"
             >
-              بررسی اخبار
+              بررسی مطالب
             </Link>
           )}
 

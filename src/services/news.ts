@@ -17,6 +17,7 @@ type NewsQueryRow = {
   title: string;
   excerpt: string | null;
   content: string;
+  author_name: string | null;
   published_at: string | null;
   cover_image_url: string | null;
   secretariats:
@@ -65,7 +66,7 @@ function mapNews(row: NewsQueryRow): NewsItem {
     title: row.title,
     excerpt: row.excerpt ?? "",
     body: row.content,
-    author: "",
+    author: row.author_name ?? "",
     secretariatSlug: secretariat.slug,
     secretariatName: secretariat.name,
     coverImageUrl: row.cover_image_url ?? "",
@@ -77,7 +78,7 @@ export async function getNews(): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,cover_image_url,published_at,secretariats(slug,name)",
+      "id,title,excerpt,content,author_name,cover_image_url,published_at,secretariats(slug,name)",
     )
     .eq("status", "published")
     .order("published_at", { ascending: false });
@@ -98,7 +99,7 @@ export async function getNewsById(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,cover_image_url,published_at,secretariats(slug,name)",
+      "id,title,excerpt,content,author_name,cover_image_url,published_at,secretariats(slug,name)",
     )
     .eq("id", id)
     .eq("status", "published")
@@ -122,7 +123,7 @@ export async function getNewsBySecretariat(
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,cover_image_url,published_at,secretariats!inner(slug,name)",
+      "id,title,excerpt,content,author_name,cover_image_url,published_at,secretariats!inner(slug,name)",
     )
     .eq("status", "published")
     .eq("secretariats.slug", slug)
@@ -154,6 +155,7 @@ export function formatDate(iso: string) {
 
 export type CreateNewsInput = {
   title: string;
+  author: string;
   excerpt: string;
   content: string;
   coverImageUrl: string;
@@ -195,20 +197,25 @@ export async function createNews(
   }
 
   if (!user) {
-    throw new Error("برای افزودن خبر باید وارد حساب شوید.");
+    throw new Error("برای افزودن مطلب باید وارد حساب شوید.");
   }
 
   const title = input.title.trim();
+  const author = input.author.trim();
   const excerpt = input.excerpt.trim();
   const content = input.content.trim();
   const coverImageUrl = input.coverImageUrl.trim();
 
   if (!title) {
-    throw new Error("عنوان خبر الزامی است.");
+    throw new Error("عنوان مطلب الزامی است.");
   }
 
   if (!content) {
-    throw new Error("متن خبر الزامی است.");
+    throw new Error("متن مطلب الزامی است.");
+  }
+
+  if (!author) {
+    throw new Error("نام نویسنده الزامی است.");
   }
 
   const status = input.status ?? "draft";
@@ -217,6 +224,7 @@ export async function createNews(
     .from("news")
     .insert({
       title,
+      author_name: author,
       slug: createSlug(title),
       excerpt: excerpt || null,
       cover_image_url: coverImageUrl || null,
@@ -249,7 +257,9 @@ export type ManagedNewsStatus =
 
 export type ManagedNewsItem = {
   id: string;
+  authorId: string | null;
   title: string;
+  author: string;
   excerpt: string;
   content: string;
   coverImageUrl: string;
@@ -264,7 +274,9 @@ export type ManagedNewsItem = {
 
 type ManagedNewsRow = {
   id: string;
+  author_id: string | null;
   title: string;
+  author_name: string | null;
   excerpt: string | null;
   content: string;
   cover_image_url: string | null;
@@ -303,7 +315,9 @@ function mapManagedNews(
 ): ManagedNewsItem {
   return {
     id: row.id,
+    authorId: row.author_id,
     title: row.title,
+    author: row.author_name ?? "",
     excerpt: row.excerpt ?? "",
     coverImageUrl: row.cover_image_url ?? "",
     content: row.content,
@@ -335,15 +349,29 @@ export async function getMyNews(): Promise<
     throw new Error("کاربر وارد حساب نشده است.");
   }
 
-  const { data, error } = await supabase
+  const { data: canEditAny, error: permissionError } =
+    await supabase.rpc("has_permission", {
+      required_permission: "news.edit_any",
+    });
+
+  if (permissionError) {
+    throw permissionError;
+  }
+
+  let query = supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,author_id,title,author_name,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
-    .eq("author_id", user.id)
     .order("created_at", {
       ascending: false,
     });
+
+  if (canEditAny !== true) {
+    query = query.eq("author_id", user.id);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(
@@ -374,14 +402,27 @@ export async function getMyNewsById(
     throw new Error("کاربر وارد حساب نشده است.");
   }
 
-  const { data, error } = await supabase
+  const { data: canEditAny, error: permissionError } =
+    await supabase.rpc("has_permission", {
+      required_permission: "news.edit_any",
+    });
+
+  if (permissionError) {
+    throw permissionError;
+  }
+
+  let query = supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,author_id,title,author_name,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
-    .eq("id", id)
-    .eq("author_id", user.id)
-    .maybeSingle();
+    .eq("id", id);
+
+  if (canEditAny !== true) {
+    query = query.eq("author_id", user.id);
+  }
+
+  const { data, error } = await query.maybeSingle();
 
   if (error) {
     console.error(
@@ -402,6 +443,7 @@ export async function getMyNewsById(
 
 export type UpdateOwnNewsInput = {
   title: string;
+  author: string;
   excerpt: string;
   content: string;
   coverImageUrl: string;
@@ -426,28 +468,48 @@ export async function updateOwnNews(
   }
 
   const title = input.title.trim();
+  const author = input.author.trim();
   const excerpt = input.excerpt.trim();
   const content = input.content.trim();
 
   if (!title) {
-    throw new Error("عنوان خبر الزامی است.");
+    throw new Error("عنوان مطلب الزامی است.");
   }
 
   if (!content) {
-    throw new Error("متن خبر الزامی است.");
+    throw new Error("متن مطلب الزامی است.");
   }
 
-  const { error } = await supabase
+  if (!author) {
+    throw new Error("نام نویسنده الزامی است.");
+  }
+
+  const { data: canEditAny, error: permissionError } =
+    await supabase.rpc("has_permission", {
+      required_permission: "news.edit_any",
+    });
+
+  if (permissionError) {
+    throw permissionError;
+  }
+
+  let query = supabase
     .from("news")
     .update({
       cover_image_url: input.coverImageUrl.trim() || null,
       title,
+      author_name: author,
       excerpt: excerpt || null,
       content,
       secretariat_id: input.secretariatId,
     })
-    .eq("id", id)
-    .eq("author_id", user.id);
+    .eq("id", id);
+
+  if (canEditAny !== true) {
+    query = query.eq("author_id", user.id);
+  }
+
+  const { error } = await query;
 
   if (error) {
     console.error(
@@ -515,14 +577,14 @@ export async function getPendingNews(): Promise<
 
   if (!allowed) {
     throw new Error(
-      "شما اجازه بررسی اخبار را ندارید.",
+      "شما اجازه بررسی مطالب را ندارید.",
     );
   }
 
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,author_id,title,author_name,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("status", "pending_review")
     .order("updated_at", {
@@ -549,14 +611,14 @@ export async function getReviewNewsById(
 
   if (!allowed) {
     throw new Error(
-      "شما اجازه بررسی اخبار را ندارید.",
+      "شما اجازه بررسی مطالب را ندارید.",
     );
   }
 
   const { data, error } = await supabase
     .from("news")
     .select(
-      "id,title,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
+      "id,author_id,title,author_name,excerpt,content,status,cover_image_url,rejection_reason,secretariat_id,created_at,updated_at,published_at,secretariats(name)",
     )
     .eq("id", id)
     .eq("status", "pending_review")
@@ -581,6 +643,7 @@ export async function getReviewNewsById(
 
 export type ReviewNewsUpdateInput = {
   title: string;
+  author: string;
   excerpt: string;
   content: string;
   coverImageUrl: string;
@@ -595,26 +658,32 @@ export async function updateReviewNews(
 
   if (!allowed) {
     throw new Error(
-      "شما اجازه ویرایش این خبر را ندارید.",
+      "شما اجازه ویرایش این مطلب را ندارید.",
     );
   }
 
   const title = input.title.trim();
+  const author = input.author.trim();
   const excerpt = input.excerpt.trim();
   const content = input.content.trim();
 
   if (!title) {
-    throw new Error("عنوان خبر الزامی است.");
+    throw new Error("عنوان مطلب الزامی است.");
   }
 
   if (!content) {
-    throw new Error("متن خبر الزامی است.");
+    throw new Error("متن مطلب الزامی است.");
+  }
+
+  if (!author) {
+    throw new Error("نام نویسنده الزامی است.");
   }
 
   const { error } = await supabase
     .from("news")
     .update({
       title,
+      author_name: author,
       excerpt: excerpt || null,
       cover_image_url: input.coverImageUrl.trim() || null,
       content,
@@ -639,7 +708,7 @@ export async function publishNews(
 
   if (!allowed) {
     throw new Error(
-      "شما اجازه انتشار خبر را ندارید.",
+      "شما اجازه انتشار مطلب را ندارید.",
     );
   }
 
@@ -670,7 +739,7 @@ export async function rejectNews(
 
   if (!allowed) {
     throw new Error(
-      "شما اجازه رد خبر را ندارید.",
+      "شما اجازه رد مطلب را ندارید.",
     );
   }
 
@@ -678,7 +747,7 @@ export async function rejectNews(
 
   if (!rejectionReason) {
     throw new Error(
-      "دلیل رد خبر را وارد کنید.",
+      "دلیل رد مطلب را وارد کنید.",
     );
   }
 

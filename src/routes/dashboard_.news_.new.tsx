@@ -22,6 +22,8 @@ import {
   getCurrentUser,
   type CurrentUser,
 } from "@/services/auth";
+import { NewsContentTextarea } from "@/components/dashboard/NewsContentTextarea";
+import { normalizeNewsImageLinks } from "@/lib/news-content";
 
 export const Route = createFileRoute(
   "/dashboard_/news_/new",
@@ -39,6 +41,7 @@ function NewNewsPage() {
     useState<Secretariat[]>([]);
 
   const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
@@ -85,7 +88,7 @@ function NewNewsPage() {
 
         if (!canCreateNews) {
           setErrorMessage(
-            "شما مجوز افزودن خبر ندارید.",
+            "شما مجوز افزودن مطلب ندارید.",
           );
 
           setCurrentUser(user);
@@ -102,7 +105,7 @@ function NewNewsPage() {
 
         if (active) {
           setErrorMessage(
-            "بارگذاری فرم افزودن خبر با مشکل مواجه شد.",
+            "بارگذاری فرم افزودن مطلب با مشکل مواجه شد.",
           );
         }
       } finally {
@@ -127,15 +130,20 @@ function NewNewsPage() {
 
     if (!title.trim()) {
       setErrorMessage(
-        "عنوان خبر را وارد کنید.",
+        "عنوان مطلب را وارد کنید.",
       );
       return;
     }
 
     if (!content.trim()) {
       setErrorMessage(
-        "متن خبر را وارد کنید.",
+        "متن مطلب را وارد کنید.",
       );
+      return;
+    }
+
+    if (!author.trim()) {
+      setErrorMessage("نام نویسنده را وارد کنید.");
       return;
     }
 
@@ -144,8 +152,9 @@ function NewNewsPage() {
     try {
       await createNews({
         title,
+        author,
         excerpt,
-        content,
+        content: normalizeNewsImageLinks(content),
         coverImageUrl,
         secretariatId:
           secretariatId || null,
@@ -154,15 +163,16 @@ function NewNewsPage() {
 
       if (status === "draft") {
         setSuccessMessage(
-          "خبر با موفقیت به‌صورت پیش‌نویس ذخیره شد.",
+          "مطلب با موفقیت به‌صورت پیش‌نویس ذخیره شد.",
         );
       } else {
         setSuccessMessage(
-          "خبر با موفقیت برای بررسی ارسال شد.",
+          "مطلب با موفقیت برای بررسی ارسال شد.",
         );
       }
 
       setTitle("");
+      setAuthor("");
       setCoverImageUrl("");
       setExcerpt("");
       setContent("");
@@ -180,7 +190,7 @@ function NewNewsPage() {
         setErrorMessage(error.message);
       } else {
         setErrorMessage(
-          "ذخیره خبر با مشکل مواجه شد.",
+          "ذخیره مطلب با مشکل مواجه شد.",
         );
       }
     } finally {
@@ -225,7 +235,7 @@ function NewNewsPage() {
           </h1>
 
           <p className="mt-2 text-sm leading-7 text-destructive">
-            این حساب اجازه افزودن خبر ندارد.
+            این حساب اجازه افزودن مطلب ندارد.
           </p>
 
           <Link
@@ -246,11 +256,11 @@ function NewNewsPage() {
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <FilePlus2 className="h-4 w-4" />
-            مدیریت اخبار
+            مدیریت مطالب
           </div>
 
           <h1 className="mt-1 text-2xl font-black text-ink md:text-3xl">
-            افزودن خبر جدید
+            افزودن مطلب جدید
           </h1>
         </div>
 
@@ -273,7 +283,7 @@ function NewNewsPage() {
               htmlFor="title"
               className="mb-2 block text-sm font-bold"
             >
-              عنوان خبر
+              عنوان مطلب
             </label>
 
             <input
@@ -285,7 +295,26 @@ function NewNewsPage() {
               }
               required
               className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
-              placeholder="عنوان خبر را وارد کنید"
+              placeholder="عنوان مطلب را وارد کنید"
+            />
+          </div>
+
+          <div className="mt-5">
+            <label
+              htmlFor="author"
+              className="mb-2 block text-sm font-bold"
+            >
+              نام نویسنده
+            </label>
+
+            <input
+              id="author"
+              type="text"
+              value={author}
+              onChange={(event) => setAuthor(event.target.value)}
+              required
+              className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
+              placeholder="نام نویسنده مطلب را وارد کنید"
             />
           </div>
 
@@ -294,7 +323,7 @@ function NewNewsPage() {
               htmlFor="coverImageUrl"
               className="mb-2 block text-sm font-bold"
             >
-              لینک تصویر شاخص خبر
+              لینک تصویر شاخص مطلب
             </label>
                       
             <input
@@ -360,7 +389,7 @@ function NewNewsPage() {
               htmlFor="excerpt"
               className="mb-2 block text-sm font-bold"
             >
-              خلاصه خبر
+              خلاصه مطلب
             </label>
 
             <textarea
@@ -371,7 +400,7 @@ function NewNewsPage() {
               }
               rows={3}
               className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-sm leading-7 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
-              placeholder="خلاصه کوتاهی برای نمایش در کارت خبر"
+              placeholder="خلاصه کوتاهی برای نمایش در کارت مطلب"
             />
           </div>
 
@@ -380,20 +409,21 @@ function NewNewsPage() {
               htmlFor="content"
               className="mb-2 block text-sm font-bold"
             >
-              متن خبر
+              متن مطلب
             </label>
 
-            <textarea
+            <NewsContentTextarea
               id="content"
               value={content}
-              onChange={(event) =>
-                setContent(event.target.value)
-              }
+              onValueChange={setContent}
               required
               rows={14}
               className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-sm leading-8 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
-              placeholder="متن کامل خبر را وارد کنید..."
+              placeholder="متن کامل مطلب را وارد کنید؛ لینک مستقیم تصویر را در خط دلخواه قرار دهید..."
             />
+            <p className="mt-2 text-xs leading-6 text-muted-foreground">
+              لینک مستقیم تصویر (مانند JPG، PNG یا WebP) خودکار به تصویر تبدیل می‌شود و در همان محل نمایش داده خواهد شد.
+            </p>
           </div>
         </div>
 

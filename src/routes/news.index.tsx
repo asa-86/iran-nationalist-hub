@@ -16,11 +16,11 @@ export const Route = createFileRoute("/news/")({
   head: () => ({
     meta: [
       {
-        title: "اخبار — حزب ناسیونالیست بزرگ ایران",
+        title: "مطالب — حزب ناسیونالیست بزرگ ایران",
       },
       {
         name: "description",
-        content: "آرشیو اخبار و اطلاعیه‌های حزب.",
+        content: "آرشیو مطالب و اطلاعیه‌های حزب.",
       },
     ],
   }),
@@ -76,11 +76,11 @@ function NewsList() {
         </div>
 
         <h1 className="mt-2 text-3xl font-black text-ink md:text-4xl">
-          اخبار حزب
+          مطالب حزب
         </h1>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          تازه‌ترین اخبار و اطلاعیه‌های منتشرشده توسط دبیرخانه‌های حزب.
+          تازه‌ترین مطالب و اطلاعیه‌های منتشرشده توسط دبیرخانه‌های حزب.
         </p>
       </header>
 
@@ -106,13 +106,13 @@ function NewsList() {
       <div className="mt-8 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
         {loading && (
           <div className="col-span-full rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            در حال دریافت اخبار...
+            در حال دریافت مطالب...
           </div>
         )}
 
         {!loading && error && (
           <div className="col-span-full rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            دریافت اخبار با خطا مواجه شد.
+            دریافت مطالب با خطا مواجه شد.
           </div>
         )}
 
@@ -129,7 +129,7 @@ function NewsList() {
           !error &&
           filtered.length === 0 && (
             <div className="col-span-full rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-              خبری برای این دبیرخانه ثبت نشده است.
+              مطلبی برای این دبیرخانه ثبت نشده است.
             </div>
           )}
       </div>

@@ -122,13 +122,13 @@ function SecretariatPage() {
 
           <section className="mt-10">
             <h2 className="text-xl font-black text-ink">
-              اخبار این دبیرخانه
+              مطالب این دبیرخانه
             </h2>
 
             <div className="mt-4 grid items-stretch gap-6 sm:grid-cols-2">
               {items.length === 0 && (
                 <p className="col-span-full rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-                  خبری برای این دبیرخانه ثبت نشده است.
+                  مطلبی برای این دبیرخانه ثبت نشده است.
                 </p>
               )}
 

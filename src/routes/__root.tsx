@@ -69,13 +69,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "پایگاه رسمی حزب ناسیونالیست بزرگ ایران — اخبار، اطلاعیه‌ها، دبیرخانه‌ها و عضویت.",
+          "پایگاه رسمی حزب ناسیونالیست بزرگ ایران — مطالب، اطلاعیه‌ها، دبیرخانه‌ها و عضویت.",
       },
       { property: "og:title", content: "حزب ناسیونالیست بزرگ ایران (NIGP)" },
       {
         property: "og:description",
         content:
-          "پایگاه رسمی حزب ناسیونالیست بزرگ ایران — اخبار، اطلاعیه‌ها، دبیرخانه‌ها و عضویت.",
+          "پایگاه رسمی حزب ناسیونالیست بزرگ ایران — مطالب، اطلاعیه‌ها، دبیرخانه‌ها و عضویت.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

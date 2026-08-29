@@ -28,7 +28,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm opacity-80">
             <li><Link to="/charter" className="hover:text-brand">اساسنامه</Link></li>
             <li><Link to="/beliefs" className="hover:text-brand">عقاید</Link></li>
-            <li><Link to="/news" className="hover:text-brand">اخبار</Link></li>
+            <li><Link to="/news" className="hover:text-brand">مطالب</Link></li>
             <li><Link to="/membership" className="hover:text-brand">عضویت</Link></li>
             <li><Link to="/contact" className="hover:text-brand">ارتباط با ما</Link></li>
           </ul>
