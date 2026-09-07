@@ -68,7 +68,7 @@ function MyNewsPage() {
         return;
       }
 
-      setCurrentUserId(user.id);
+      setCurrentUserId(user.user.id);
       setCanEditAny(
         user.permissions.some(
           (permission) => permission.name === "news.edit_any",

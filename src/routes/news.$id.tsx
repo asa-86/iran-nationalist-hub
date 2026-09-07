@@ -245,7 +245,7 @@ function NewsDetail() {
       )}
 
       {/* نظرات */}
-      <section className="mt-12 border-t border-border pt-8">
+      {/* <section className="mt-12 border-t border-border pt-8">
 
         <div className="mb-6 flex items-center gap-2">
           <MessageSquare className="h-5 w-5 text-brand" />
@@ -255,7 +255,7 @@ function NewsDetail() {
           </h2>
         </div>
 
-        {/* فرم ارسال نظر */}
+        // فرم ارسال نظر
         <div className="rounded-lg border border-border bg-card p-4 shadow-card">
 
           {replyTo !== null && (
@@ -293,7 +293,7 @@ function NewsDetail() {
           </div>
         </div>
 
-        {/* لیست نظرات */}
+        // لیست نظرات
         <div className="mt-6 space-y-4">
 
           {comments.length === 0 && (
@@ -311,7 +311,7 @@ function NewsDetail() {
           ))}
 
         </div>
-      </section>
+      </section> */}
     </article>
   );
 }

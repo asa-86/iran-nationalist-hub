@@ -95,7 +95,7 @@ function EditNewsPage() {
         const canPublish = user?.permissions.some(
           (permission) => permission.name === "news.publish",
         );
-        const isOwner = item.authorId === user?.id;
+        const isOwner = item.authorId === user?.user.id;
         const editable = canEditAny
           ? item.status !== "published" || canPublish
           : isOwner &&
